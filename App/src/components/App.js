@@ -1,20 +1,39 @@
 /* eslint-disable no-lone-blocks */
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "./navbar/Navbar";
 import Web3 from "web3";
 import Tether from "../truffle_abis/Tether.json";
 import RWD from "../truffle_abis/RWD.json";
 import DecentralBank from "../truffle_abis/DecentralBank.json";
-import Main from "./Main";
+import StakingInitApp from "./StakingInitApp";
 import "./App.css";
 
-class App extends Component {
-  async componentDidMount() {
-    await this.loadWeb3();
-    await this.loadBlockchainData();
-  }
+const App = () => {
+  let myState = {
+    account: "0x0",
+    tether: {},
+    rwd: {},
+    decentralBank: {},
+    tetherBalance: "0",
+    rwdBalance: "0",
+    stakingBalance: "0",
+  };
 
-  async loadWeb3() {
+  const [loading, setLoading] = useState(true);
+
+  const setMyState = (newState) => {
+    myState = { ...myState, ...newState };
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      await loadWeb3();
+      await loadBlockchainData();
+    };
+    loadData();
+  }, []);
+
+  const loadWeb3 = async () => {
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum);
       await window.ethereum.enable();
@@ -23,38 +42,62 @@ class App extends Component {
     } else {
       window.alert("No ethereum web browser detected! Check out MetaMask");
     }
-  }
+  };
 
-  async loadBlockchainData() {
+  const loadBlockchainData = async () => {
     const web3 = window.web3;
     const account = await web3.eth.getAccounts();
 
-    this.setState({ account: account[0] });
+    console.log("myState", myState);
+
+    setMyState({ ...myState, account: account[0] });
 
     const networkId = await web3.eth.net.getId();
+
+    const x = await window.web3.eth.getBalance(myState.account);
+    console.log("getBalance", x.toString());
 
     // Load tether contract
     const tetherData = Tether.networks[networkId];
     if (tetherData) {
       const tether = new web3.eth.Contract(Tether.abi, tetherData.address);
-      this.setState({ tether });
+      setMyState({ tether });
       let tetherBalance = await tether.methods
-        .balanceOf(this.state.account)
+        .balanceOf(myState.account)
         .call();
-      this.setState({ tetherBalance: tetherBalance.toString() });
-      // console.log("balance", tetherBalance);
+      setMyState({ tetherBalance: tetherBalance.toString() });
+      console.log("tetherBalance", myState);
     } else {
       window.alert("Error: Tether contract not deployed (no detected network)");
     }
 
+    myState.tether.methods
+      .approve("0x21BA204D74281300cBEC2b12701240A627AB8727", 1000000)
+      .send({ from: "0x21BA204D74281300cBEC2b12701240A627AB8727" }) // Replace 'yourAccountAddress' with the address of the account that is calling this function
+      .then((receipt) => {
+        // Transaction successful, do something with the receipt
+        console.log("Transaction successful:", receipt);
+      });
+
+    let result = await myState.tether.methods
+      .transferFrom(
+        "0x21BA204D74281300cBEC2b12701240A627AB8727",
+        "0x159FBBD2c26823eA224D37B262c528C10c4feE44",
+        1000000
+      )
+      .send({
+        from: "0x21BA204D74281300cBEC2b12701240A627AB8727", // Replace with the sender's address (must match the 'from' address above)
+        gas: 500000, // Replace with the desired gas amount
+      });
+    console.log("result", result);
     // Load rwd contract
     const rwdData = RWD.networks[networkId];
     if (rwdData) {
       const rwd = new web3.eth.Contract(RWD.abi, rwdData.address);
-      this.setState({ rwd });
-      let rwdBalance = await rwd.methods.balanceOf(this.state.account).call();
-      this.setState({ rwdBalance: rwdBalance.toString() });
-      // console.log("balance", rwdBalance);
+      setMyState({ rwd });
+      let rwdBalance = await rwd.methods.balanceOf(myState.account).call();
+      setMyState({ rwdBalance: rwdBalance.toString() });
+      // console.log("RWD balance", rwdBalance);
     } else {
       window.alert("Error: RWD contract not deployed (no detected network)");
     }
@@ -66,11 +109,11 @@ class App extends Component {
         DecentralBank.abi,
         decentralBankData.address
       );
-      this.setState({ decentralBank });
+      setMyState({ decentralBank });
       //   let stakingBalance = await decentralBank.methods
-      //     .stakingBalance(this.state.account)
+      //     .stakingBalance(myState.account)
       //     .call();
-      //   this.setState({ stakingBalance: stakingBalance.toString() });
+      //   setMyState({ stakingBalance: stakingBalance.toString() });
       //   console.log("balance", stakingBalance);
     } else {
       window.alert(
@@ -78,86 +121,69 @@ class App extends Component {
       );
     }
 
-    this.setState({ loading: false });
-    // console.log("networkId", networkId);
-  }
+    setLoading(false);
+    console.log("finalState", myState);
+  };
 
   //stake + unstake funtions with impl from decentralBank
-  stakeTokens = (amount) => {
-    this.setState({ loading: true });
-    this.state.tether.methods
-      .approve(this.state.decentralBank._address, amount)
-      .send({ from: this.state.account })
+  const stakeTokens = (amount) => {
+    setMyState({ loading: true });
+    myState.tether.methods
+      .approve(myState.decentralBank._address, amount)
+      .send({ from: myState.account })
       .on("transactionHash", (hash) => {
-        this.state.decentralBank.methods
+        myState.decentralBank.methods
           .depositTokens(amount)
-          .send({ from: this.state.account })
+          .send({ from: myState.account })
           .on("transactionHash", (hash) => {
-            this.setState({ loading: false });
+            setMyState({ loading: false });
           });
       });
   };
-  constructor(props) {
-    super(props);
-    this.state = {
-      account: "0x0",
-      tether: {},
-      rwd: {},
-      decentralBank: {},
-      tetherBalance: "0",
-      rwdBalance: "0",
-      stakingBalance: "0",
-      loading: true,
-    };
-  }
-  render() {
-    let content;
-    {
-      this.state.loading
-        ? (content = (
-            <p id="loader" className="text-center" style={{ margin: "30px" }}>
-              Loading...
-            </p>
-          ))
-        : (content = (
-            <Main
-              tetherBalance={this.state.tetherBalance}
-              rwdBalance={this.state.rwdBalance}
-              stakingBalance={this.state.stakingBalance}
-              stakeTokens={this.stakeTokens}
-            />
-          ));
-    }
-    return (
-      <div className="text-center">
-        <Navbar account={this.state.account} />
-        <div className="container-fluid mt-5">
-          <div className="'row">
-            <main
-              role="main"
-              className="col-lg-12 ml-auto mr-auto"
-              style={{ maxWidth: "600px", minHeight: "100vm" }}
+
+  const content = loading ? (
+    <p id="loader" className="text-center" style={{ margin: "30px" }}>
+      Loading...
+    </p>
+  ) : (
+    <StakingInitApp
+      tetherBalance={myState.tetherBalance}
+      rwdBalance={myState.rwdBalance}
+      stakingBalance={myState.stakingBalance}
+      stakeTokens={stakeTokens}
+    />
+  );
+  return (
+    <div className="text-center">
+      <Navbar account={myState.account} />
+      <div className="container-fluid mt-5">
+        <div className="'row">
+          <main
+            role="main"
+            className="col-lg-12 ml-auto mr-auto"
+            style={{ maxWidth: "600px", minHeight: "100vm" }}
+          >
+            <div>{content}</div>
+            <button
+              type="submit"
+              className="btn btn-primary btn-lg btn-block"
+              onClick={() => {
+                // console.log(
+                //   myState.tether.methods
+                //     .balanceOf(myState.account)
+                //     .call()
+                // );
+                // console.log("accout", account);
+                // console.log(window.web3.eth.getBalance(account));
+              }}
             >
-              <div>{content}</div>
-              <button
-                type="submit"
-                className="btn btn-primary btn-lg btn-block"
-                onClick={() =>
-                  console.log(
-                    this.state.tether.methods
-                      .balanceOf(this.state.account)
-                      .call()
-                  )
-                }
-              >
-                Deposit
-              </button>
-            </main>
-          </div>
+              Deposit
+            </button>
+          </main>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default App;
