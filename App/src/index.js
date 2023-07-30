@@ -1,13 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
-import App from "./components/App";
+import AppRoutes from "./components/appRoutes/AppRoutes";
+// import App from "./components/App";
+
 import { BrowserRouter } from "react-router-dom";
+import LoginProvider from "./providers/login/login.provider.jsx";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <BrowserRouter>
-    <App />
+    <LoginProvider>
+      <AppRoutes />
+    </LoginProvider>
   </BrowserRouter>,
   document.getElementById("root")
 );
