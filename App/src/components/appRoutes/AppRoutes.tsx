@@ -7,10 +7,12 @@ import { MyProfilePage } from "../../pages/myProfile/MyProfile";
 import { UploadPage } from "../../pages/upload/Upload";
 import { StatsPage } from "../../pages/stats/Stats";
 import { ProtectedRoute } from "./ProtectedRoute";
+import Navbar from "../navbar/Navbar";
 
 const AppRoutes = () => {
   return (
     <div className="main">
+      <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />

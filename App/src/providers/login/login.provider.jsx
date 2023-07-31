@@ -77,7 +77,7 @@ const LoginProvider = (props) => {
   const handleLogout = () => {
     // Perform any additional cleanup or logout logic here
     setLoggedStatus(false);
-
+    console.log("LOg ouT");
     // Redirect to the homepage or any other route after logout if needed
     navigate("/");
   };
