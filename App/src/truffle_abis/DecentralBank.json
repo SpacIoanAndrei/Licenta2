@@ -881,12 +881,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x080825f66EAFaa7C4Ce28449963A709ECBc66c5F",
-      "transactionHash": "0x108014974e16c93200ac8021cba787e6a98bcb9995752af6317d6cb73a9daa5e"
+      "address": "0xba8C9f747b721564f6f0b47580b4181721BBDFc1",
+      "transactionHash": "0xde3b52241399fb99d30512921dd81f251f40b153a57e0f501c362c0cd34b86e7"
     }
   },
   "schemaVersion": "3.4.13",
-  "updatedAt": "2023-05-30T18:52:38.342Z",
+  "updatedAt": "2023-08-12T09:22:45.587Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
