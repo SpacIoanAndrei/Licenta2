@@ -9,9 +9,13 @@ import { StatsPage } from "../../pages/stats/Stats";
 import { ProtectedRoute } from "./ProtectedRoute";
 import Navbar from "../navbar/Navbar";
 
+const styles = {
+  fontFamily: '"Open Sans", Arial, sans-serif',
+};
+
 const AppRoutes = () => {
   return (
-    <div className="main">
+    <div className="main" style={styles}>
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
