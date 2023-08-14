@@ -1,43 +1,53 @@
-import React, { useContext, useEffect, useState } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import React, { useContext } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { loginContext } from "../../providers/login/login.provider";
 import "./Navbar.css";
-
-interface NavbarComponent {
-  userName?: string;
-  email?: string;
-}
-interface UserProtoytpe {
-  name: string;
-  email: string;
-}
 
 const Navbar = () => {
   const { loggedStatus, handleLogin, handleLogout } = useContext(loginContext);
   const navigate = useNavigate();
-  let decodedToken: UserProtoytpe;
-  const accessToken = localStorage.getItem("access_token");
+
+  let isAdmin = true;
 
   return (
     <div className="header">
       <div className="leftSection">
+        <NavLink className="navlink" to="/">
+          Home
+        </NavLink>
+        <NavLink className="navlink" to="/explore">
+          Explore
+        </NavLink>
         {loggedStatus && (
           <>
-            <NavLink className="navlink" to="/">
-              Home
-            </NavLink>
-            <NavLink className="navlink" to="/explore">
-              Explore
-            </NavLink>
             <NavLink className="navlink" to="/profile">
               Profile
+            </NavLink>
+            <NavLink className="navlink" to="/myFiles">
+              My files
+            </NavLink>
+            <NavLink className="navlink" to="/editFile">
+              Edit file
             </NavLink>
             <NavLink className="navlink" to="/upload">
               Upload
             </NavLink>
-            <NavLink className="navlink" to="/stats">
-              Statistics
+            <NavLink className="navlink" to="/transfer">
+              Transfer
             </NavLink>
+            {isAdmin && (
+              <>
+                <NavLink className="navlink" to="/verify">
+                  Verify
+                </NavLink>
+                <NavLink className="navlink" to="/roles">
+                  Roles
+                </NavLink>
+                <NavLink className="navlink" to="/stats">
+                  Statistics
+                </NavLink>
+              </>
+            )}
           </>
         )}
       </div>
