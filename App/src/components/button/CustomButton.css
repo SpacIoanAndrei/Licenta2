@@ -1,5 +1,5 @@
 .custom-button {
-  background-color: #efefef;
+  background-color: #fff;
   border-radius: 12px;
   border: 2px solid #dcdcdc;
   padding: 8px 16px;
@@ -7,4 +7,15 @@
 .custom-button:hover {
   background-color: #dcdcdc;
   border: 2px solid #a9a9a9;
+}
+.dark {
+  background-color: #19376d;
+  border-radius: 12px;
+  border: 2px solid #0b2447;
+  padding: 8px 16px;
+  color: #fff;
+}
+.dark:hover {
+  background-color: #3483eb;
+  border: 2px solid #0b2447;
 }

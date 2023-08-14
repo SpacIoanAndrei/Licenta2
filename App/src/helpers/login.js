@@ -14,3 +14,7 @@ export const loadWeb3 = async () => {
   }
   return true;
 };
+
+export const isMetaMask = () => {
+  return typeof window.ethereum !== "undefined";
+};

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { loginContext } from "../../providers/login/login.provider";
 import "./Navbar.css";
 
@@ -14,7 +14,7 @@ interface UserProtoytpe {
 
 const Navbar = () => {
   const { loggedStatus, handleLogin, handleLogout } = useContext(loginContext);
-
+  const navigate = useNavigate();
   let decodedToken: UserProtoytpe;
   const accessToken = localStorage.getItem("access_token");
 
@@ -41,12 +41,8 @@ const Navbar = () => {
           </>
         )}
       </div>
-      {loggedStatus ? (
-        <div className="navlink" onClick={handleLogout}>
-          LOG OUT
-        </div>
-      ) : (
-        <div className="navlink" onClick={handleLogin}>
+      {!loggedStatus && (
+        <div className="navlink" onClick={() => navigate("/login")}>
           LOG IN
         </div>
       )}

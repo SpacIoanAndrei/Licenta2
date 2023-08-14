@@ -37,6 +37,7 @@ const LoginProvider = (props) => {
     const handleAccountsChanged = (accounts) => {
       if (accounts.length > 0) {
         setLoggedStatus(true);
+        navigate("/");
         // setConnectedAddress(accounts[0]);
         // User is connected, you can perform additional actions here
       } else {
