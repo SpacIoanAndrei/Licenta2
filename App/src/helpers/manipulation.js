@@ -13,3 +13,8 @@ export const convertSizeToMBGB = (sizeInBytes) => {
     return `${sizeInBytes} bytes`;
   }
 };
+
+export const convertTimestampToDate = (blockTimestamp) => {
+  const date = new Date(blockTimestamp * 1000);
+  return date.toLocaleDateString();
+};

@@ -3,7 +3,7 @@
   width: 100%;
   min-height: 100vh;
   box-sizing: border-box;
-  padding: 30px 0px 0px 30%;
+  padding: 30px 0px 0px 10%;
   background: linear-gradient(170deg, #e6faff 50%, #b3f0ff 90%);
 }
 .button-rows {
@@ -14,6 +14,20 @@
   padding-left: 15px;
   padding-bottom: 40px;
 }
+.content-columns {
+  display: grid;
+  grid-template-columns: 80% 20%;
+}
+.right-section {
+  margin-left: -250px;
+  margin-right: 100px;
+  font-weight: 600;
+  font-size: 18px;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: 60px 60px 60px;
+}
+
 #form-file-upload {
   height: 16rem;
   /* width: 28rem; */

@@ -7,11 +7,17 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import LoginProvider from "./providers/login/login.provider.jsx";
 import * as serviceWorker from "./serviceWorker";
+import { CurrentUserProvider } from "./providers/currentUser.provider";
+import { FilesProvider } from "./providers/files.provider";
 
 ReactDOM.render(
   <BrowserRouter>
     <LoginProvider>
-      <AppRoutes />
+      <CurrentUserProvider>
+        <FilesProvider>
+          <AppRoutes />
+        </FilesProvider>
+      </CurrentUserProvider>
     </LoginProvider>
   </BrowserRouter>,
   document.getElementById("root")

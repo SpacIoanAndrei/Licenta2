@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { loginContext } from "../../providers/login/login.provider";
 import CustomLoader from "../../components/loader/loader";
-import "./Explore.css";
 import { SmallCardFile } from "../../components/smallCardFile/SmallCardFile";
 import CustomButton from "../../components/button/CustomButton";
+import { useFiles } from "../../providers/files.provider";
+import "./Explore.css";
 
 export const ExplorePage = () => {
   const { loggedStatus, handleLogin, handleLogout } = useContext(loginContext);
 
   const [selectedTag, setSelectedTag] = useState("");
   const [arrayOfTags, setArrayOfTags] = useState(["tech", "photos", "patent"]);
+  const { files, updateFiles } = useFiles();
 
+  console.log("files", files);
   const searchByTag = () => {
     console.log("imp sea by tag");
   };
