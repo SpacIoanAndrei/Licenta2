@@ -11,6 +11,8 @@ import CustomButton from "../../components/button/CustomButton";
 import CustomLoader from "../../components/loader/loader";
 import "./Upload.css";
 import { convertSizeToMBGB } from "../../helpers/manipulation";
+import { CID } from "ipfs-http-client";
+const { create } = require("ipfs-http-client");
 
 const RightsCategory = {
   PersonalUseOnly: 0,
@@ -26,6 +28,24 @@ const RightsCategory = {
 };
 
 export const UploadPage = () => {
+  async function ipfsClient() {
+    const projectId = "2U4Gw2cBNqMFqFjbl3w1xUpqsl3";
+    const projectSecret = "18adbe6374b547256cfbfafc886b1a12";
+    const auth =
+      "Basic " +
+      Buffer.from(projectId + ":" + projectSecret).toString("base64");
+
+    const ipfs = await create({
+      host: "ipfs.infura.io",
+      port: 5001,
+      protocol: "https",
+      headers: {
+        authorization: auth,
+      },
+    });
+    return ipfs;
+  }
+
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
@@ -39,6 +59,25 @@ export const UploadPage = () => {
     priceForTransfer: "",
   });
   const [loading, setLoading] = useState(false);
+  async function saveFile() {
+    let ipfs = await ipfsClient();
+
+    let result = await ipfs.add();
+  }
+  // useEffect(() => {
+  //   // async function proba() {
+  //   //   let ipfs = await ipfsClient();
+  //   //   let result = await ipfs.add("hello");
+  //   //   console.log("ipfs", result);
+  //   // }
+  //   // let asyncitr = ipfs.cat(hash);
+  //   // for (const itr of asyncitr) {
+  //   //   console.log(itr)
+  //   // let data = Buffer.from(itr).toString()
+  //   // }
+  //   //proba();
+  //   // saveFile();
+  // }, []);
 
   const handleDrag = function(
     e: React.DragEvent<HTMLFormElement | HTMLDivElement>
@@ -53,6 +92,8 @@ export const UploadPage = () => {
   };
 
   // triggers when file is dropped
+  // let uplfl: File | undefined;
+  const [uplfl, setUplfl] = useState<File | undefined>();
   const handleDrop = function(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     e.stopPropagation();
@@ -65,6 +106,7 @@ export const UploadPage = () => {
         fileSize: e.dataTransfer.files[0].size,
         fileTitle: e.dataTransfer.files[0].name,
       });
+      setUplfl(e.dataTransfer.files[0]);
     }
   };
 
@@ -81,6 +123,8 @@ export const UploadPage = () => {
         fileSize: e.target.files[0].size,
         fileTitle: e.target.files[0].name,
       });
+      setUplfl(e.target.files[0]);
+      console.log("uplfl click", uplfl);
 
       // handleFiles(e.target.files);
     }
@@ -100,9 +144,32 @@ export const UploadPage = () => {
     setFormData({ ...formData, ownershipRights: evt });
   };
 
-  const submitButton = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    console.log(formData);
+  const submitButton = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLoading(true);
+    let cid = 0;
+    //upload to ipfs
+    if (uplfl) {
+      let ipfs = await ipfsClient();
+      try {
+        const fileForUpload = new Blob([uplfl], {
+          type: uplfl.type,
+        });
+
+        const result = await ipfs.add(fileForUpload);
+        cid = result.cid.toString();
+      } catch (error) {
+        console.error("Error uploading file to IPFS:", error);
+      }
+
+      //return; // No need to show alert if a file is selected and processed
+    }
+    if (cid !== 0) {
+      //save to blockchain
+    }
+    //no more get the file from ipfs: QmY1kYk3tDtwgJojMy8bgM5GRWp5GvCKNE1j4Chkd4BB8s
+    setLoading(false);
+    alert("No files selected");
   };
 
   const findPropertyNameByValue = (newValue: number) => {
@@ -112,10 +179,11 @@ export const UploadPage = () => {
     });
     return selectedKey;
   };
-
+  const cid = "QmY1kYk3tDtwgJojMy8bgM5GRWp5GvCKNE1j4Chkd4BB8s";
   return (
     <div className="upload-file-container">
       <h1>Enter details about the files you want to upload:</h1>
+      <a href={`https://ipfs.io/ipfs/${cid}`}> link</a>
       <form
         id="form-file-upload"
         onDragEnter={handleDrag}
