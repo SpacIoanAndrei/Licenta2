@@ -1,0 +1,15 @@
+.myfiles-container {
+  padding: 30px;
+  padding-bottom: 100px;
+  width: 100%;
+  min-height: calc(100vh - 72px);
+  /* height: 100vh; */
+  background: linear-gradient(170deg, #e6faff 50%, #b3f0ff 90%);
+}
+.myfiles-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0% 10%;
+  column-gap: 5%;
+  row-gap: 40px;
+}

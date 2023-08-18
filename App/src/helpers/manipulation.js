@@ -31,3 +31,30 @@ export const getVerificationStatusString = (status) => {
       return "Unknown";
   }
 };
+
+export const getRightsCategoryString = (category) => {
+  switch (category) {
+    case "0":
+      return "Personal Use Only";
+    case "1":
+      return "Commercial Use";
+    case "2":
+      return "Attribution";
+    case "3":
+      return "Derivative Works";
+    case "4":
+      return "Non Transferable";
+    case "5":
+      return "Limited Edition";
+    case "6":
+      return "Educational Use";
+    case "7":
+      return "Resale Rights";
+    case "8":
+      return "Expiration";
+    case "9":
+      return "Region Specific";
+    default:
+      return "Unknown";
+  }
+};

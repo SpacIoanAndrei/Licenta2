@@ -18,13 +18,33 @@ const FilesProvider = (props) => {
       priceForTransfer: [],
     },
   ]);
+  const [personalFiles, setPersonalFiles] = useState([
+    {
+      fileTitle: "",
+      fileReference: "",
+      fileSize: 0,
+      fileType: "",
+      description: "",
+      country: "",
+      ownershipRights: 0,
+      uploadDate: 0,
+      likes: 0,
+      pastOwners: [],
+      priceForTransfer: [],
+    },
+  ]);
 
   const updateFiles = (newFiles) => {
     setFiles(newFiles);
   };
+  const updatePersonalFiles = (newFiles) => {
+    setPersonalFiles(newFiles);
+  };
 
   return (
-    <FilesContext.Provider value={{ files, updateFiles }}>
+    <FilesContext.Provider
+      value={{ files, updateFiles, personalFiles, updatePersonalFiles }}
+    >
       {props.children}
     </FilesContext.Provider>
   );

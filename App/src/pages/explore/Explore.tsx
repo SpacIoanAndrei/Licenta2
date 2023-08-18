@@ -39,15 +39,22 @@ export const ExplorePage = () => {
           ))}
         </div>
         <div className="explore-files">
-          <SmallCardFile title={"Title"} author={"Andrei"} likes={12} />
-          <SmallCardFile title={"Title"} author={"Andrei"} likes={12} />
-          <SmallCardFile title={"Title"} author={"Andrei"} likes={12} />
-          <SmallCardFile title={"Title"} author={"Andrei"} likes={12} />
-          <SmallCardFile title={"Title"} author={"Andrei"} likes={12} />
-          <SmallCardFile title={"Title"} author={"Andrei"} likes={12} />
-          <SmallCardFile title={"Title"} author={"Andrei"} likes={12} />
-          <SmallCardFile title={"Title"} author={"Andrei"} likes={12} />
-          <SmallCardFile title={"Title"} author={"Andrei"} likes={12} />
+          {files.map((pf: any) => (
+            <SmallCardFile
+              likes={pf.likes}
+              isEditable={true}
+              fileTitle={pf.fileTitle}
+              fileReference={pf.fileReference}
+              fileSize={pf.fileSize}
+              fileType={pf.fileType}
+              description={pf.description}
+              country={pf.country}
+              ownershipRights={pf.ownershipRights}
+              uploadDate={pf.uploadDate}
+              pastOwners={pf.pastOwners}
+              priceForTransfer={pf.priceForTransfer}
+            />
+          ))}
         </div>
       </div>
       {/* <CustomLoader size="50px" /> */}

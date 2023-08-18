@@ -1,7 +1,7 @@
 .explore-container {
   padding: 30px;
   width: 100%;
-  /* height: fit-content; */
+  height: 100vh;
   background: linear-gradient(170deg, #e6faff 50%, #b3f0ff 90%);
 }
 .explore-title {

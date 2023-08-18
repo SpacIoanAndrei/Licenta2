@@ -81,13 +81,13 @@ export const getPersonalFiles = async (usersContract, userAddress) => {
         filesArray.push({
           fileTitle: result.fileTitle,
           fileReference: result.fileReference,
-          fileSize: result.fileSize,
+          fileSize: parseInt(result.fileSize),
           fileType: result.fileType,
           description: result.description,
-          country: result.country,
+          country: window.web3.utils.hexToUtf8(result.country),
           ownershipRights: result.ownershipRights,
           uploadDate: result.uploadDate,
-          likes: result.likes,
+          likes: parseInt(result.likes),
           pastOwners: result.pastOwners,
           priceForTransfer: result.priceForTransfer,
         });
