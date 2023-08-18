@@ -7,7 +7,7 @@ import { useFiles } from "../../providers/files.provider";
 import "./Explore.css";
 
 export const ExplorePage = () => {
-  const { loggedStatus, handleLogin, handleLogout } = useContext(loginContext);
+  const { loggedStatus, usersContract } = useContext(loginContext);
 
   const [selectedTag, setSelectedTag] = useState("");
   const [arrayOfTags, setArrayOfTags] = useState(["tech", "photos", "patent"]);

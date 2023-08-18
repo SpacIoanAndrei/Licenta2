@@ -1,21 +1,21 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loadWeb3 } from "../../helpers/login";
-
-// export interface Status {
-//   loggedStatus: boolean;
-//   handleLogin: (authToken: string, errors?: string) => void;
-//   handleLogout: () => void;
-// }
+import Users from "../../truffle_abis/Users.json";
 
 export const loginContext = createContext({
   loggedStatus: false,
+  usersContract: null,
+  userAddress: "",
   handleLogin: () => {},
   handleLogout: () => {},
 });
 
 const LoginProvider = (props) => {
   const [loggedStatus, setLoggedStatus] = useState(false);
+  const [usersContract, setUsersContract] = useState();
+  const [userAddress, setUserAddress] = useState();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,6 +38,7 @@ const LoginProvider = (props) => {
       if (accounts.length > 0) {
         setLoggedStatus(true);
         navigate("/");
+        handleLogin();
         // setConnectedAddress(accounts[0]);
         // User is connected, you can perform additional actions here
       } else {
@@ -64,14 +65,37 @@ const LoginProvider = (props) => {
     };
   }, []);
 
-  const handleLogin = (authToken, errors) => {
+  const handleLogin = async (authToken, errors) => {
     if (errors === "Unauthorized") {
       navigate("/");
+      console.log("unauthorised");
       return;
     }
 
-    // Perform additional logic here, such as verifying the authToken
-    // and then set the loggedStatus to true if login is successful
+    const web3 = window.web3;
+    const networkId = await web3.eth.net.getId();
+    const usersContractData = Users.networks[networkId];
+    const accounts = await web3.eth.getAccounts();
+    if (usersContractData) {
+      const usersConnectedContract = new web3.eth.Contract(
+        Users.abi,
+        usersContractData.address
+      );
+
+      setUsersContract(usersConnectedContract);
+      //get current user
+      setUserAddress(accounts[0]);
+      try {
+        const result = await usersConnectedContract.methods
+          .getUser(accounts[0])
+          .call();
+      } catch (error) {
+        window.alert("Save details about your account in Profile page.");
+      }
+    } else {
+      window.alert("Error: Users contract not deployed (no detected network)");
+    }
+
     setLoggedStatus(true);
   };
 
@@ -84,7 +108,15 @@ const LoginProvider = (props) => {
   };
 
   return (
-    <loginContext.Provider value={{ loggedStatus, handleLogin, handleLogout }}>
+    <loginContext.Provider
+      value={{
+        loggedStatus,
+        usersContract,
+        userAddress,
+        handleLogin,
+        handleLogout,
+      }}
+    >
       {props.children}
     </loginContext.Provider>
   );

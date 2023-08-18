@@ -6,11 +6,14 @@ import { isMetaMask } from "../../helpers/login";
 import "./LoginPage.css";
 
 export const LoginPage = () => {
-  const { loggedStatus, handleLogin, handleLogout } = useContext(loginContext);
+  const { loggedStatus, handleLogin } = useContext(loginContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (loggedStatus) navigate("/explore");
+    if (loggedStatus) {
+      handleLogin();
+      navigate("/profile");
+    }
   }, [loggedStatus]);
   return (
     <div className="login-container">

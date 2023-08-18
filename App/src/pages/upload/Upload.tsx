@@ -1,17 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-  Dropdown,
-  DropdownButton,
-  Form,
-  InputGroup,
-  Row,
-} from "react-bootstrap";
-import { loginContext } from "../../providers/login/login.provider";
+import React, { useRef, useState } from "react";
+import { Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
 import CustomButton from "../../components/button/CustomButton";
 import CustomLoader from "../../components/loader/loader";
 import "./Upload.css";
 import { convertSizeToMBGB } from "../../helpers/manipulation";
-import { CID } from "ipfs-http-client";
 const { create } = require("ipfs-http-client");
 
 const RightsCategory = {
@@ -64,20 +56,6 @@ export const UploadPage = () => {
 
     let result = await ipfs.add();
   }
-  // useEffect(() => {
-  //   // async function proba() {
-  //   //   let ipfs = await ipfsClient();
-  //   //   let result = await ipfs.add("hello");
-  //   //   console.log("ipfs", result);
-  //   // }
-  //   // let asyncitr = ipfs.cat(hash);
-  //   // for (const itr of asyncitr) {
-  //   //   console.log(itr)
-  //   // let data = Buffer.from(itr).toString()
-  //   // }
-  //   //proba();
-  //   // saveFile();
-  // }, []);
 
   const handleDrag = function(
     e: React.DragEvent<HTMLFormElement | HTMLDivElement>
@@ -124,7 +102,6 @@ export const UploadPage = () => {
         fileTitle: e.target.files[0].name,
       });
       setUplfl(e.target.files[0]);
-      console.log("uplfl click", uplfl);
 
       // handleFiles(e.target.files);
     }

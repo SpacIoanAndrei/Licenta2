@@ -18,3 +18,16 @@ export const convertTimestampToDate = (blockTimestamp) => {
   const date = new Date(blockTimestamp * 1000);
   return date.toLocaleDateString();
 };
+
+export const getVerificationStatusString = (status) => {
+  switch (status) {
+    case 0:
+      return "Not Verified";
+    case 1:
+      return "Verification Requested";
+    case 2:
+      return "Verified";
+    default:
+      return "Unknown";
+  }
+};

@@ -10,7 +10,7 @@ const CurrentUserProvider = (props) => {
     country: "",
     description: "",
     allowedUploads: 0,
-    index: 0,
+    index: -1,
     verifyStatus: 0,
     uploadingInProgess: false,
   });

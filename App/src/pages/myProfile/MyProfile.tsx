@@ -2,23 +2,31 @@ import React, { useContext, useEffect, useState } from "react";
 import { loginContext } from "../../providers/login/login.provider";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Form, InputGroup, Row } from "react-bootstrap";
-import "./MyProfile.css";
 import CustomButton from "../../components/button/CustomButton";
 import CustomLoader from "../../components/loader/loader";
 import { useCurrentUser } from "../../providers/currentUser.provider";
-import { convertTimestampToDate } from "../../helpers/manipulation";
+import {
+  convertTimestampToDate,
+  getVerificationStatusString,
+} from "../../helpers/manipulation";
+import {
+  changeUserDetails,
+  getUser,
+  insertUser,
+} from "../../helpers/callsContractAPI";
+import "./MyProfile.css";
 
 export const MyProfilePage = () => {
-  const { loggedStatus, handleLogin, handleLogout } = useContext(loginContext);
+  const { usersContract, userAddress } = useContext(loginContext);
   const [loading, setLoading] = useState(false);
   const { currentUser, updateCurrentUser } = useCurrentUser();
 
   const [form, setForm] = useState({
-    userEmail: "",
-    first_name: "",
-    last_name: "",
-    country: "",
-    description: "",
+    userEmail: currentUser.userEmail,
+    first_name: currentUser.name,
+    last_name: currentUser.name,
+    country: currentUser.country,
+    description: currentUser.description,
   });
 
   const handleChange = (e: any) => {
@@ -27,23 +35,57 @@ export const MyProfilePage = () => {
 
   const resetButton = () => {
     setForm({
-      userEmail: "",
-      first_name: "",
-      last_name: "",
-      country: "",
-      description: "",
+      userEmail: currentUser.userEmail,
+      first_name: currentUser.name,
+      last_name: currentUser.name,
+      country: currentUser.country,
+      description: currentUser.description,
     });
+  };
+
+  const insertNewUser = async () => {
+    const payload = {
+      userAddress: userAddress,
+      userEmail: form.userEmail,
+      name: form.first_name + " " + form.last_name,
+      country: form.country,
+      description: form.description,
+    };
+    insertUser(payload, usersContract, userAddress).then(() =>
+      setLoading(false)
+    );
+  };
+  const updateUserDetails = () => {
+    console.log("update user");
+    const payload = {
+      userAddress: userAddress,
+      userEmail: form.userEmail,
+      name: form.first_name + " " + form.last_name,
+      country: form.country,
+      description: form.description,
+      verifyStatus: currentUser.verifyStatus,
+    };
+    changeUserDetails(payload, usersContract, userAddress).then(() =>
+      setLoading(false)
+    );
   };
 
   const submitButton = (e: React.SyntheticEvent) => {
     e.preventDefault();
+    setLoading(true);
     console.log(form);
+    if (currentUser.index === -1) insertNewUser();
+    else updateUserDetails();
   };
 
   useEffect(() => {
-    if (currentUser.userEmail.length === 0)
-      console.log("call to get user account details");
-    else
+    setLoading(true);
+    if (currentUser.index === -1 && usersContract && userAddress) {
+      getUser(usersContract, userAddress).then((parsedResult) => {
+        updateCurrentUser(parsedResult);
+        // setLoading(false);
+      });
+    } else {
       setForm({
         userEmail: currentUser.userEmail,
         first_name: currentUser.name,
@@ -51,9 +93,9 @@ export const MyProfilePage = () => {
         country: currentUser.country,
         description: currentUser.description,
       });
-  }, []);
-
-  //use logged to display info that cannot be directly modified
+      setLoading(false);
+    }
+  }, [currentUser, userAddress]);
 
   return (
     <div className="profile-container">
@@ -139,14 +181,14 @@ export const MyProfilePage = () => {
             />
           </Row>
         </form>
-        {currentUser.dateOfRegistration === 0 && (
+        {currentUser.index !== -1 && (
           <div className="right-section">
             <span className="extra-info">Date of registration</span>
             {convertTimestampToDate(currentUser.dateOfRegistration)}
             <span className="extra-info">Allowed uploaded files</span>
             {currentUser.allowedUploads}
             <span className="extra-info">Status for this account</span>
-            {currentUser.verifyStatus}
+            {getVerificationStatusString(currentUser.verifyStatus)}
           </div>
         )}
       </div>
