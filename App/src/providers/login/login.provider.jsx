@@ -7,6 +7,7 @@ export const loginContext = createContext({
   loggedStatus: false,
   usersContract: null,
   userAddress: "",
+  userRole: 0,
   handleLogin: () => {},
   handleLogout: () => {},
 });
@@ -15,6 +16,7 @@ const LoginProvider = (props) => {
   const [loggedStatus, setLoggedStatus] = useState(false);
   const [usersContract, setUsersContract] = useState();
   const [userAddress, setUserAddress] = useState();
+  const [userRole, setUserRole] = useState();
 
   const navigate = useNavigate();
 
@@ -23,6 +25,9 @@ const LoginProvider = (props) => {
       let isLoggedIn = false;
       try {
         isLoggedIn = await loadWeb3();
+        if (isLoggedIn) {
+          handleLogin();
+        }
       } catch {
         console.log("catch");
         setLoggedStatus(false);
@@ -87,10 +92,12 @@ const LoginProvider = (props) => {
       setUserAddress(accounts[0]);
       try {
         const result = await usersConnectedContract.methods
-          .getUser(accounts[0])
+          .getRoleForUser()
           .call();
+        console.log("result", result);
+        setUserRole(result);
       } catch (error) {
-        window.alert("Save details about your account in Profile page.");
+        window.alert("role problem.");
       }
     } else {
       window.alert("Error: Users contract not deployed (no detected network)");
@@ -113,6 +120,7 @@ const LoginProvider = (props) => {
         loggedStatus,
         usersContract,
         userAddress,
+        userRole,
         handleLogin,
         handleLogout,
       }}

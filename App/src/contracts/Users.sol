@@ -47,7 +47,8 @@ contract Users {
   struct UserModelStruct {
     bytes32 userEmail;
     uint dateOfRegistration;
-    string name;
+    string firstName;
+    string lastName;
     bytes32 country;
     string description;
     uint allowedUploads;
@@ -153,6 +154,17 @@ contract Users {
     _deleteRole(Read, _account);
   }
 
+  function getRoleForUser() external view returns(uint8 role){
+    if (roles[Admin][msg.sender]){
+      return 3;
+    } else if (roles[Write][msg.sender]){
+      return 2;
+    } else if (roles[Read][msg.sender]){
+      return 1;
+    }
+    return 0;
+  }
+
 ///----------------------------------------------------- ROLES LOGIC END--------------------------------------
   
 ////***************************************************** USER LOGIC  ******************************************
@@ -173,12 +185,14 @@ contract Users {
 
   function insertUser(address userAddress, 
     bytes32 userEmail,
-    string memory name,
+    string memory firstName,
+    string memory lastName,
     bytes32 country,
     string memory description) public returns(uint index) {
     require(!isUser(userAddress), "User address is already used");
     userModels[userAddress].userEmail = userEmail;
-    userModels[userAddress].name = name;
+    userModels[userAddress].firstName = firstName;
+    userModels[userAddress].lastName = lastName;
     userModels[userAddress].country = country;
     userModels[userAddress].description = description;
 
@@ -233,7 +247,8 @@ contract Users {
 
   function updateUser(address userAddress, 
     bytes32 userEmail,
-    string calldata name,
+    string calldata firstName,
+    string calldata lastName,
     bytes32 country,
     string calldata description,
     VerificationStatus verifyStatus) external returns(bool success) 
@@ -241,7 +256,8 @@ contract Users {
     require(isUser(userAddress), "User address is not initialized");
     require(verifyStatus != VerificationStatus.Verified, "Not allowed to set this status");
     userModels[userAddress].userEmail = userEmail;
-    userModels[userAddress].name = name;
+    userModels[userAddress].firstName = firstName;
+    userModels[userAddress].lastName = lastName;
     userModels[userAddress].country = country;
     userModels[userAddress].description = description;
     userModels[userAddress].verifyStatus = verifyStatus;
@@ -345,7 +361,6 @@ contract Users {
 
     return fileId;
   }
-
 
   //edit price for transfer
   function editPrice( uint fileId, uint newPrice) external onlyRole(Write) returns(uint index) {

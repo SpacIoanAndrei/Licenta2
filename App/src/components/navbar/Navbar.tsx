@@ -4,10 +4,8 @@ import { loginContext } from "../../providers/login/login.provider";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const { loggedStatus, handleLogin, handleLogout } = useContext(loginContext);
+  const { loggedStatus, userRole } = useContext(loginContext);
   const navigate = useNavigate();
-
-  let isAdmin = true;
 
   return (
     <div className="header">
@@ -35,7 +33,7 @@ const Navbar = () => {
             <NavLink className="navlink" to="/transfer">
               Transfer
             </NavLink>
-            {isAdmin && (
+            {userRole == 3 && (
               <>
                 <NavLink className="navlink" to="/verify">
                   Verify

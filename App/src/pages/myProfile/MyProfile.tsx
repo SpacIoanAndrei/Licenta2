@@ -23,8 +23,8 @@ export const MyProfilePage = () => {
 
   const [form, setForm] = useState({
     userEmail: currentUser.userEmail,
-    first_name: currentUser.name,
-    last_name: currentUser.name,
+    first_name: currentUser.firstName,
+    last_name: currentUser.lastName,
     country: currentUser.country,
     description: currentUser.description,
   });
@@ -47,7 +47,8 @@ export const MyProfilePage = () => {
     const payload = {
       userAddress: userAddress,
       userEmail: form.userEmail,
-      name: form.first_name + " " + form.last_name,
+      firstName: form.first_name,
+      lastName: form.last_name,
       country: form.country,
       description: form.description,
     };
@@ -60,7 +61,8 @@ export const MyProfilePage = () => {
     const payload = {
       userAddress: userAddress,
       userEmail: form.userEmail,
-      name: form.first_name + " " + form.last_name,
+      firstName: form.first_name,
+      lastName: form.last_name,
       country: form.country,
       description: form.description,
       verifyStatus: currentUser.verifyStatus,
@@ -81,15 +83,20 @@ export const MyProfilePage = () => {
   useEffect(() => {
     setLoading(true);
     if (currentUser.index === -1 && usersContract && userAddress) {
-      getUser(usersContract, userAddress).then((parsedResult) => {
-        updateCurrentUser(parsedResult);
-        // setLoading(false);
-      });
+      getUser(usersContract, userAddress)
+        .then((parsedResult) => {
+          updateCurrentUser(parsedResult);
+          // setLoading(false);
+        })
+        .catch((error) => {
+          window.alert("Complete log in preocess");
+          setLoading(false);
+        });
     } else {
       setForm({
         userEmail: currentUser.userEmail,
-        first_name: currentUser.name,
-        last_name: currentUser.name,
+        first_name: currentUser.firstName,
+        last_name: currentUser.lastName,
         country: currentUser.country,
         description: currentUser.description,
       });

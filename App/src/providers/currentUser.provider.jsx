@@ -4,9 +4,10 @@ export const CurrentUserContext = createContext();
 
 const CurrentUserProvider = (props) => {
   const [currentUser, setCurrentUser] = useState({
-    userEmail: "andrei@yahoo.com",
+    userEmail: "",
     dateOfRegistration: 0,
-    name: "",
+    firstName: "",
+    lastName: "",
     country: "",
     description: "",
     allowedUploads: 0,
