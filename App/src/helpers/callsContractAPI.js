@@ -49,3 +49,52 @@ export const getUser = async (usersContract, userAddress) => {
   };
   return parsedUserModel;
 };
+
+export const storeFile = async (payload, usersContract, userAddress) => {
+  if (usersContract !== null) {
+    console.log("payload", payload);
+    const result = await usersContract.methods
+      .addFile(
+        payload.userAddress,
+        payload.fileTitle,
+        payload.fileReference,
+        payload.fileSize,
+        payload.fileType,
+        payload.description,
+        window.web3.utils.fromAscii(payload.country),
+        payload.ownershipRights,
+        payload.priceForTransfer
+      )
+      .send({ from: userAddress });
+  }
+};
+
+export const getPersonalFiles = async (usersContract, userAddress) => {
+  let filesArray = [];
+  if (usersContract !== null) {
+    const fileIds = await usersContract.methods
+      .getFilesForAddress(userAddress)
+      .call();
+    const results = await Promise.all(
+      fileIds.map(async (fileId) => {
+        const result = await usersContract.methods.getFile(fileId).call();
+        filesArray.push({
+          fileTitle: result.fileTitle,
+          fileReference: result.fileReference,
+          fileSize: result.fileSize,
+          fileType: result.fileType,
+          description: result.description,
+          country: result.country,
+          ownershipRights: result.ownershipRights,
+          uploadDate: result.uploadDate,
+          likes: result.likes,
+          pastOwners: result.pastOwners,
+          priceForTransfer: result.priceForTransfer,
+        });
+        return result;
+      })
+    );
+    // console.log("payload", results);
+    return filesArray;
+  }
+};

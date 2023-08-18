@@ -6,6 +6,7 @@ import { ExplorePage } from "../../pages/explore/Explore";
 import { MyProfilePage } from "../../pages/myProfile/MyProfile";
 import { UploadPage } from "../../pages/upload/Upload";
 import { StatsPage } from "../../pages/stats/Stats";
+import { MyFilesPage } from "../../pages/myFiles/MyFiles";
 import { AdminRoutes, ProtectedRoute } from "./ProtectedRoute";
 import Navbar from "../navbar/Navbar";
 
@@ -23,7 +24,7 @@ const AppRoutes = () => {
         <Route path="/explore" element={<ExplorePage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<MyProfilePage />} />
-          <Route path="/myFiles" element={<MyProfilePage />} />
+          <Route path="/myFiles" element={<MyFilesPage />} />
           <Route path="/editFile" element={<MyProfilePage />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/transfer" element={<UploadPage />} />

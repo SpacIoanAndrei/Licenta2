@@ -1,9 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
 import CustomButton from "../../components/button/CustomButton";
 import CustomLoader from "../../components/loader/loader";
 import "./Upload.css";
 import { convertSizeToMBGB } from "../../helpers/manipulation";
+import { loginContext } from "../../providers/login/login.provider";
+import { storeFile } from "../../helpers/callsContractAPI";
 const { create } = require("ipfs-http-client");
 
 const RightsCategory = {
@@ -51,11 +53,8 @@ export const UploadPage = () => {
     priceForTransfer: "",
   });
   const [loading, setLoading] = useState(false);
-  async function saveFile() {
-    let ipfs = await ipfsClient();
-
-    let result = await ipfs.add();
-  }
+  const { usersContract, userAddress } = useContext(loginContext);
+  const excludedTypes = ["application/x-msdownload", "application/x-dosexec"];
 
   const handleDrag = function(
     e: React.DragEvent<HTMLFormElement | HTMLDivElement>
@@ -78,13 +77,17 @@ export const UploadPage = () => {
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       // handleFiles(e.dataTransfer.files);
-      setFormData({
-        ...formData,
-        fileType: e.dataTransfer.files[0].type,
-        fileSize: e.dataTransfer.files[0].size,
-        fileTitle: e.dataTransfer.files[0].name,
-      });
-      setUplfl(e.dataTransfer.files[0]);
+      if (excludedTypes.includes(e.dataTransfer.files[0].type)) {
+        window.alert("This file type is not allowed.");
+      } else {
+        setFormData({
+          ...formData,
+          fileType: e.dataTransfer.files[0].type,
+          fileSize: e.dataTransfer.files[0].size,
+          fileTitle: e.dataTransfer.files[0].name,
+        });
+        setUplfl(e.dataTransfer.files[0]);
+      }
     }
   };
 
@@ -95,13 +98,17 @@ export const UploadPage = () => {
       console.log("type", e.target.files[0].type);
       console.log("size", e.target.files[0].size);
       console.log("size", e.target.files);
-      setFormData({
-        ...formData,
-        fileType: e.target.files[0].type,
-        fileSize: e.target.files[0].size,
-        fileTitle: e.target.files[0].name,
-      });
-      setUplfl(e.target.files[0]);
+      if (excludedTypes.includes(e.target.files[0].type)) {
+        window.alert("This file type is not allowed.");
+      } else {
+        setFormData({
+          ...formData,
+          fileType: e.target.files[0].type,
+          fileSize: e.target.files[0].size,
+          fileTitle: e.target.files[0].name,
+        });
+        setUplfl(e.target.files[0]);
+      }
 
       // handleFiles(e.target.files);
     }
@@ -124,29 +131,46 @@ export const UploadPage = () => {
   const submitButton = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-    let cid = 0;
+    let cid = "QmePTXBtrjUPny3ShMM2Vj5DaYFLHfRRYyNkYTgYcVtCjr";
     //upload to ipfs
-    if (uplfl) {
-      let ipfs = await ipfsClient();
-      try {
-        const fileForUpload = new Blob([uplfl], {
-          type: uplfl.type,
-        });
+    // if (uplfl) {
+    //   let ipfs = await ipfsClient();
+    //   try {
+    //     const fileForUpload = new Blob([uplfl], {
+    //       type: uplfl.type,
+    //     });
 
-        const result = await ipfs.add(fileForUpload);
-        cid = result.cid.toString();
-      } catch (error) {
-        console.error("Error uploading file to IPFS:", error);
-      }
+    //     const result = await ipfs.add(fileForUpload);
+    //     cid = result.cid.toString();
+    //   } catch (error) {
+    //     console.error("Error uploading file to IPFS:", error);
+    //   }
 
-      //return; // No need to show alert if a file is selected and processed
-    }
-    if (cid !== 0) {
+    //   //return; // No need to show alert if a file is selected and processed
+    // }
+    console.log("cid", cid);
+    if (cid.length > 0 && uplfl) {
       //save to blockchain
+      const payload = {
+        userAddress: userAddress,
+        fileTitle: formData.fileTitle,
+        fileReference: cid,
+        fileSize: uplfl.size,
+        fileType: uplfl.type,
+        description: formData.description,
+        country: formData.country,
+        ownershipRights: formData.ownershipRights,
+        priceForTransfer: formData.priceForTransfer,
+      };
+      storeFile(payload, usersContract, userAddress).then(() =>
+        setLoading(false)
+      );
     }
     //no more get the file from ipfs: QmY1kYk3tDtwgJojMy8bgM5GRWp5GvCKNE1j4Chkd4BB8s
+    //no more get the image from ipfs: QmePTXBtrjUPny3ShMM2Vj5DaYFLHfRRYyNkYTgYcVtCjr
+
     setLoading(false);
-    alert("No files selected");
+    // alert("No files selected");
   };
 
   const findPropertyNameByValue = (newValue: number) => {

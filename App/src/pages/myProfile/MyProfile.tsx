@@ -89,7 +89,7 @@ export const MyProfilePage = () => {
           // setLoading(false);
         })
         .catch((error) => {
-          window.alert("Complete log in preocess");
+          window.alert("Complete log in process");
           setLoading(false);
         });
     } else {

@@ -3,7 +3,6 @@ pragma solidity >=0.4.21 <0.9.0;
 pragma experimental ABIEncoderV2;
 
 contract Users {
-
     // Data used for roles and security
   address public owner;
   bytes32 private constant Admin = keccak256(abi.encodePacked("Admin"));
@@ -81,7 +80,6 @@ contract Users {
     require(roles[_role][msg.sender], "Not authorized!");
     _;
   }
-
   function _grantRole(bytes32 _role, address _account) internal {
     if (_role==Admin){
         roles[Admin][_account]=true;
@@ -166,7 +164,6 @@ contract Users {
   }
 
 ///----------------------------------------------------- ROLES LOGIC END--------------------------------------
-  
 ////***************************************************** USER LOGIC  ******************************************
   function isUser(address userAddress) public view returns(bool isRegistered) { //view: do not alter the state of the contract or the blockchain in any way.
     if(userPointer.length == 0) return false;
@@ -203,7 +200,6 @@ contract Users {
     userModels[userAddress].uploadingInProgess = false;
 
     userPointer.push(userAddress);
-
     _grantRole(Write, userAddress);
     emit CreatedUser(userAddress, userModels[userAddress].index, userEmail);
     return userPointer.length-1;
@@ -214,23 +210,6 @@ contract Users {
   {
     require(isUser(userAddress), "User address is not initialized");
     return userModels[userAddress];
-  }
-
-  function deleteUser(address userAddress) public returns(uint index){
-    require(isUser(userAddress), "User address is not initialized"); 
-    uint rowToDelete = userModels[userAddress].index;
-    address keyToMove = userPointer[userPointer.length-1];
-    userPointer[rowToDelete] = keyToMove;
-    userModels[keyToMove].index = rowToDelete; 
-    userPointer.pop();
-    emit DeletedUser(
-        userAddress, 
-        rowToDelete);
-    emit UpdatedUser(
-        keyToMove, 
-        rowToDelete, 
-        userModels[keyToMove].userEmail);
-    return rowToDelete;
   }
 
   function updateUserByAdmin(address userAddress, uint allowedUploads, VerificationStatus verifyStatus) external onlyRole(Admin) returns(bool success) 
@@ -276,8 +255,6 @@ contract Users {
 
 ////***************************************************** USER LOGIC END ***************************************
 
-//##################################################### FILES LOGIC  ##########################################
-
   function getFilesForAddress(address userAddress) public view returns(uint[] memory filesForAddress){
     return personalUserfiles[userAddress];
   }
@@ -285,6 +262,9 @@ contract Users {
   function getFilesForTag(string memory tag) public view returns(uint[] memory filesForTag){
     return tagFiles[tag];
   }
+    function getFile(uint fileId) public view returns (UploadedFile memory) {
+        return files[fileId];
+    }
 
   function addNewTagsToFile(uint fileId, string[] memory newTags) public onlyRole(Write) returns(bool areTagsAdded) {
     require(fileId < fileCounter, "No file has this id");
@@ -361,7 +341,6 @@ contract Users {
 
     return fileId;
   }
-
   //edit price for transfer
   function editPrice( uint fileId, uint newPrice) external onlyRole(Write) returns(uint index) {
     require(fileId < fileCounter, "No file has this id");
@@ -397,5 +376,4 @@ contract Users {
     return fileId;
   }
 
-//##################################################### FILES LOGIC END #######################################
 }
