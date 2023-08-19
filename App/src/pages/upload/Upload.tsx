@@ -8,7 +8,7 @@ import { loginContext } from "../../providers/login/login.provider";
 import { storeFile } from "../../helpers/callsContractAPI";
 const { create } = require("ipfs-http-client");
 
-const RightsCategory = {
+export const RightsCategory = {
   PersonalUseOnly: 0,
   CommercialUse: 1,
   Attribution: 2,
@@ -260,8 +260,6 @@ export const UploadPage = () => {
               <Dropdown.Item eventKey="7">ResaleRights</Dropdown.Item>
               <Dropdown.Item eventKey="8">Expiration</Dropdown.Item>
               <Dropdown.Item eventKey="9">RegionSpecific</Dropdown.Item>
-
-              {/* Add more items as needed */}
             </DropdownButton>
           </Form.Group>
         </Row>

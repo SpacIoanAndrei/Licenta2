@@ -1,6 +1,32 @@
 .editFile-container {
-  padding: 30px;
+  padding: 20px 15%;
   width: 100%;
-  height: calc(100vh - 72px);
+  min-height: calc(100vh - 72px);
+  height: 100%;
   background: linear-gradient(170deg, #e6faff 50%, #b3f0ff 90%);
+}
+.edit1-call {
+  border: 2px solid white;
+  border-radius: 35px;
+  padding: 0px 50px;
+}
+.edit2-call {
+  margin-top: 30px;
+  border: 2px solid white;
+  border-radius: 15px;
+  padding: 35px 50px;
+}
+.edit-fle-button-rows {
+  justify-content: center;
+  margin-bottom: 30px;
+}
+.change-price-wrapper {
+  padding: 25px;
+  display: flex;
+  gap: 50px;
+}
+.edit-both-loader {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
 }

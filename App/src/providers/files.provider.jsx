@@ -20,6 +20,7 @@ const FilesProvider = (props) => {
   ]);
   const [personalFiles, setPersonalFiles] = useState([
     {
+      fileId: 0,
       fileTitle: "",
       fileReference: "",
       fileSize: 0,

@@ -79,6 +79,7 @@ export const getPersonalFiles = async (usersContract, userAddress) => {
       fileIds.map(async (fileId) => {
         const result = await usersContract.methods.getFile(fileId).call();
         filesArray.push({
+          fileId: fileId,
           fileTitle: result.fileTitle,
           fileReference: result.fileReference,
           fileSize: parseInt(result.fileSize),
@@ -94,7 +95,33 @@ export const getPersonalFiles = async (usersContract, userAddress) => {
         return result;
       })
     );
-    // console.log("payload", results);
     return filesArray;
+  }
+};
+
+export const editSoftDetails = async (payload, usersContract, userAddress) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .editFilePresentation(
+        payload.fileId,
+        payload.fileTitle,
+        payload.description,
+        window.web3.utils.fromAscii(payload.country),
+        payload.ownershipRights
+      )
+      .send({ from: userAddress });
+  }
+};
+
+export const changePriceForfile = async (
+  payload,
+  usersContract,
+  userAddress
+) => {
+  if (usersContract !== null) {
+    console.log("payload", payload);
+    const result = await usersContract.methods
+      .editPrice(payload.fileId, payload.newPrice)
+      .send({ from: userAddress });
   }
 };
