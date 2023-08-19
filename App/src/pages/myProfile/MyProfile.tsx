@@ -104,6 +104,29 @@ export const MyProfilePage = () => {
     }
   }, [currentUser, userAddress]);
 
+  const handleRequestVerify = (nr: number) => {
+    setLoading(true);
+    const payload = {
+      userAddress: userAddress,
+      userEmail: form.userEmail,
+      firstName: form.first_name,
+      lastName: form.last_name,
+      country: form.country,
+      description: form.description,
+      verifyStatus: nr,
+    };
+    console.log("payload", payload);
+    console.log("currentUser.verifyStatus", currentUser.verifyStatus);
+
+    changeUserDetails(payload, usersContract, userAddress).then(() => {
+      getUser(usersContract, userAddress).then((parsedResult) => {
+        updateCurrentUser(parsedResult);
+        // setLoading(false);
+      });
+      setLoading(false);
+    });
+  };
+
   return (
     <div className="profile-container">
       <h1>Your account details:</h1>
@@ -189,14 +212,28 @@ export const MyProfilePage = () => {
           </Row>
         </form>
         {currentUser.index !== -1 && (
-          <div className="right-section">
-            <span className="extra-info">Date of registration</span>
-            {convertTimestampToDate(currentUser.dateOfRegistration)}
-            <span className="extra-info">Allowed uploaded files</span>
-            {currentUser.allowedUploads}
-            <span className="extra-info">Status for this account</span>
-            {getVerificationStatusString(currentUser.verifyStatus)}
-          </div>
+          <>
+            <div className="right-section">
+              <span className="extra-info">Date of registration</span>
+              {convertTimestampToDate(currentUser.dateOfRegistration)}
+              <span className="extra-info">Allowed uploaded files</span>
+              {currentUser.allowedUploads}
+              <span className="extra-info">Status for this account</span>
+              {getVerificationStatusString(currentUser.verifyStatus)}
+              {currentUser.verifyStatus === 0 && (
+                <CustomButton
+                  onClick={() => handleRequestVerify(1)}
+                  title={"Request Account Verification"}
+                />
+              )}
+              {currentUser.verifyStatus === 1 && (
+                <CustomButton
+                  onClick={() => handleRequestVerify(0)}
+                  title={"Cancel Account Verification"}
+                />
+              )}
+            </div>
+          </>
         )}
       </div>
     </div>

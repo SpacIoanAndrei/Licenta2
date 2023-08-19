@@ -19,13 +19,13 @@
   grid-template-columns: 80% 20%;
 }
 .right-section {
-  margin-left: -250px;
+  margin-left: -300px;
   margin-right: 100px;
   font-weight: 600;
   font-size: 18px;
   display: grid;
   grid-template-columns: auto auto;
-  grid-template-rows: 60px 60px 60px;
+  grid-template-rows: 60px 60px 60px 60px;
 }
 
 #form-file-upload {
