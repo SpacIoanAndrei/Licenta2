@@ -193,3 +193,13 @@ export const getFilesByTag = async (
     return filesArray;
   }
 };
+
+export const addALike = async (payload, usersContract, userAddress) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .changeLike(payload.fileId, payload.like)
+      .send({ from: userAddress });
+    return result;
+  }
+  return -1;
+};

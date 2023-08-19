@@ -5,6 +5,7 @@ export const FilesContext = createContext();
 const FilesProvider = (props) => {
   const [files, setFiles] = useState([
     {
+      fileId: 0,
       fileTitle: "",
       fileReference: "",
       fileSize: 0,

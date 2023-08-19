@@ -73,6 +73,7 @@ export const ExplorePage = () => {
             ) : (
               files.map((pf: any) => (
                 <SmallCardFile
+                  fileId={pf.fileId}
                   likes={pf.likes}
                   isEditable={false}
                   fileTitle={pf.fileTitle}

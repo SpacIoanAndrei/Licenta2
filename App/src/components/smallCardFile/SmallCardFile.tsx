@@ -8,8 +8,11 @@ import {
 } from "../../helpers/manipulation";
 import CustomButton from "../button/CustomButton";
 import { Link } from "react-router-dom";
+import { loginContext } from "../../providers/login/login.provider";
+import { addALike } from "../../helpers/callsContractAPI";
 
 interface SmallCardFileProp {
+  fileId: number;
   isEditable: boolean;
   fileTitle: string;
   fileReference: string;
@@ -25,6 +28,7 @@ interface SmallCardFileProp {
 }
 
 export const SmallCardFile = ({
+  fileId,
   isEditable,
   fileTitle,
   fileReference,
@@ -39,6 +43,19 @@ export const SmallCardFile = ({
   priceForTransfer,
 }: SmallCardFileProp) => {
   const [isHovered, setIsHovered] = useState(false);
+  const { usersContract, userAddress } = useContext(loginContext);
+  const [localLikes, setlocalLikes] = useState(likes);
+
+  const addLike = () => {
+    const payload = {
+      fileId,
+      like: 1,
+    };
+    addALike(payload, usersContract, userAddress).then((result) => {
+      console.log("return from like", result);
+      setlocalLikes(localLikes + 1);
+    });
+  };
   return (
     <div
       className="small-card-wrapper"
@@ -61,7 +78,7 @@ export const SmallCardFile = ({
         <div className="title">{fileTitle}</div>
         <div className="info-line">
           <span>{convertTimestampToDate(uploadDate)}</span>
-          <span>Likes: {likes}</span>
+          <span>Likes: {localLikes}</span>
         </div>
 
         {isHovered && (
@@ -79,7 +96,7 @@ export const SmallCardFile = ({
               <span>
                 Price: {priceForTransfer[priceForTransfer.length - 1]}
               </span>
-              {isEditable && (
+              {isEditable ? (
                 <Link to={`/editFile?customId=${fileReference}`}>
                   <CustomButton
                     onClick={() => {
@@ -88,6 +105,8 @@ export const SmallCardFile = ({
                     title={"Edit"}
                   />
                 </Link>
+              ) : (
+                <CustomButton onClick={addLike} title={"Like"} />
               )}
             </div>
           </>

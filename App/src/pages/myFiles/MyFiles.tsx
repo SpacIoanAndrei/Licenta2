@@ -26,6 +26,7 @@ export const MyFilesPage = () => {
         <div className="myfiles-layout">
           {personalFiles.map((pf: any) => (
             <SmallCardFile
+              fileId={pf.fileId}
               likes={pf.likes}
               isEditable={true}
               fileTitle={pf.fileTitle}
