@@ -9,9 +9,15 @@ import "./EditFile.css";
 import {
   changePriceForfile,
   editSoftDetails,
+  getAllTagsAvailable,
+  saveNewTags,
+  saveTagsToFile,
 } from "../../helpers/callsContractAPI";
 import { RightsCategory } from "../upload/Upload";
-import { convertSizeToMBGB } from "../../helpers/manipulation";
+import {
+  convertSizeToMBGB,
+  tagsStringToArray,
+} from "../../helpers/manipulation";
 
 export const EditFilePage = () => {
   const { userAddress, usersContract } = useContext(loginContext);
@@ -29,8 +35,12 @@ export const EditFilePage = () => {
     likes: 0,
     pastOwners: [""],
     priceForTransfer: [0],
+    connectedTags: [""],
   });
-  const [arrayOfTags, setArrayOfTags] = useState(["tech", "photos", "patent"]);
+  const [arrayOfTags, setArrayOfTags] = useState([""]);
+  const [newTagsToLink, setNewTagsToLink] = useState();
+  const [oldTagsToLink, setOldTagsToLink] = useState();
+
   const { personalFiles, updateFiles } = useFiles();
   const [newPrice, setNewPrice] = useState(0);
 
@@ -56,6 +66,9 @@ export const EditFilePage = () => {
     });
 
     if (thisFile !== undefined) {
+      getAllTagsAvailable(usersContract, userAddress).then((result) => {
+        setArrayOfTags(result);
+      });
       setSelectedFile(thisFile);
       setFormData({
         fileId: thisFile.fileId,
@@ -69,7 +82,6 @@ export const EditFilePage = () => {
       );
     }
   }, []);
-  console.log("settted", selectedFile.fileTitle);
 
   const handleTextChange = (e: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -77,6 +89,14 @@ export const EditFilePage = () => {
 
   const handlePriceChange = (e: any) => {
     setNewPrice(e.target.value);
+  };
+
+  const oldTagsChange = (e: any) => {
+    setOldTagsToLink(e.target.value);
+  };
+
+  const handleNewTagsChange = (e: any) => {
+    setNewTagsToLink(e.target.value);
   };
 
   const priceChange = () => {
@@ -89,6 +109,29 @@ export const EditFilePage = () => {
       setLoading(false);
       const newPricesArray = [...selectedFile.priceForTransfer, newPrice];
       setSelectedFile({ ...selectedFile, priceForTransfer: newPricesArray });
+    });
+  };
+
+  const fileOldTagsChange = () => {
+    setLoading(true);
+    const payload = {
+      fileId: selectedFile.fileId,
+      existingTags: tagsStringToArray(oldTagsToLink),
+    };
+    console.log("payload", payload);
+    saveTagsToFile(payload, usersContract, userAddress).then(() => {
+      setLoading(false);
+    });
+  };
+
+  const fileNewTagsChange = () => {
+    setLoading(true);
+    const payload = {
+      fileId: selectedFile.fileId,
+      newTags: tagsStringToArray(newTagsToLink),
+    };
+    saveNewTags(payload, usersContract, userAddress).then(() => {
+      setLoading(false);
     });
   };
 
@@ -122,6 +165,7 @@ export const EditFilePage = () => {
   const handleSelect = (evt: any) => {
     setFormData({ ...formData, ownershipRights: evt });
   };
+  console.log("how", selectedFile);
 
   return (
     <div className="editFile-container">
@@ -260,6 +304,68 @@ export const EditFilePage = () => {
                 variant="dark"
                 title="Change price"
                 onClick={priceChange}
+              />
+            </div>
+          </div>
+          <div className="edit3-call">
+            <div>
+              Available tags:{" "}
+              {arrayOfTags.map((tag, index) =>
+                index === selectedFile.priceForTransfer.length - 1
+                  ? `'${tag}'. `
+                  : `'${tag}', `
+              )}
+            </div>
+            <div>
+              Tags linked to your file:{" "}
+              {selectedFile.connectedTags.map((tag, index) =>
+                index === selectedFile.priceForTransfer.length - 1
+                  ? `'${tag}'. `
+                  : `'${tag}', `
+              )}
+            </div>
+            <div className="change-tags-wrapper">
+              <div>
+                Link tags to your file <br />
+              </div>
+              <textarea
+                style={{
+                  height: "38px",
+                  padding: "6px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "0.25rem",
+                }}
+                defaultValue={""}
+                name="textTags"
+                onChange={oldTagsChange}
+              />
+              <CustomButton
+                type="submit"
+                variant="dark"
+                title="Add tags"
+                onClick={fileOldTagsChange}
+              />
+              <div>
+                New Tags to link to your file <br />
+                (Write tags separated by a comma and a space):
+              </div>
+              <textarea
+                style={{
+                  height: "38px",
+                  padding: "6px 12px",
+                  border: "1px solid #ced4da",
+                  borderRadius: "0.25rem",
+                  minHeight: "70px",
+                }}
+                defaultValue={""}
+                name="textTags"
+                onChange={handleNewTagsChange}
+              />
+              <CustomButton
+                type="submit"
+                variant="dark"
+                title="Add new tags"
+                onClick={fileNewTagsChange}
               />
             </div>
           </div>

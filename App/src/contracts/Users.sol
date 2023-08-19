@@ -42,6 +42,7 @@ contract Users {
     uint likes;
     address[] pastOwners;
     uint[] priceForTransfer;
+    bytes32[] conenctedTags;
   }
   struct UserModelStruct {
     bytes32 userEmail;
@@ -65,8 +66,8 @@ contract Users {
   uint fileCounter;
   mapping(uint => UploadedFile) files;
   mapping(address => uint[]) personalUserfiles;
-  mapping(string => uint[]) tagFiles;
-  string[] tags;
+  mapping(bytes32 => uint[]) tagFiles;
+  bytes32[] tags;
 
   event AddedFile(string fileReference, uint index);
   event TransferredFile(address oldOwner, address newOwner, uint fileId);
@@ -259,26 +260,32 @@ contract Users {
     return personalUserfiles[userAddress];
   }
 
-  function getFilesForTag(string memory tag) public view returns(uint[] memory filesForTag){
+  function getFilesForTag(bytes32 tag) public view returns(uint[] memory filesForTag){
     return tagFiles[tag];
   }
-    function getFile(uint fileId) public view returns (UploadedFile memory) {
-        return files[fileId];
-    }
+  function getFile(uint fileId) public view returns (UploadedFile memory) {
+    return files[fileId];
+  }
 
-  function addNewTagsToFile(uint fileId, string[] memory newTags) public onlyRole(Write) returns(bool areTagsAdded) {
+  function getAllTags() public view returns (bytes32[] memory) {
+    return tags;
+  }
+
+  function addNewTagsToFile(uint fileId, bytes32[] memory newTags) public onlyRole(Write) returns(bool areTagsAdded) {
     require(fileId < fileCounter, "No file has this id");
     for (uint i = 0; i < newTags.length; i++) {
       tags.push(newTags[i]);
       tagFiles[newTags[i]].push(fileId);
+      files[fileId].conenctedTags.push(newTags[i]);
     }
     return true;
   }
 
-  function addTagsToFile(uint fileId, string[] memory existingTags) public onlyRole(Write) returns(bool areTagsAdded) {
+  function addTagsToFile(uint fileId, bytes32[] memory existingTags) public onlyRole(Write) returns(bool areTagsAdded) {
     require(fileId < fileCounter, "No file has this id");
     for (uint i = 0; i < existingTags.length; i++) {
       tagFiles[existingTags[i]].push(fileId);
+      files[fileId].conenctedTags.push(existingTags[i]);
     }
     return true;
   }

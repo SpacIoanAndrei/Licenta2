@@ -16,6 +16,7 @@ const FilesProvider = (props) => {
       likes: 0,
       pastOwners: [],
       priceForTransfer: [],
+      connectedTags: [],
     },
   ]);
   const [personalFiles, setPersonalFiles] = useState([
@@ -32,6 +33,7 @@ const FilesProvider = (props) => {
       likes: 0,
       pastOwners: [],
       priceForTransfer: [],
+      connectedTags: [],
     },
   ]);
 

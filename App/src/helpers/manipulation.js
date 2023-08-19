@@ -58,3 +58,12 @@ export const getRightsCategoryString = (category) => {
       return "Unknown";
   }
 };
+
+export const tagsStringToArray = (inputString) => {
+  const trimmedString = inputString.trim();
+  const tagArray = trimmedString.split(",");
+  const formattedArray = tagArray.map((tag) =>
+    window.web3.utils.fromAscii(tag.trim())
+  );
+  return formattedArray;
+};

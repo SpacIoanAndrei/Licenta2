@@ -84,7 +84,6 @@ export const UploadPage = () => {
           ...formData,
           fileType: e.dataTransfer.files[0].type,
           fileSize: e.dataTransfer.files[0].size,
-          fileTitle: e.dataTransfer.files[0].name,
         });
         setUplfl(e.dataTransfer.files[0]);
       }
@@ -95,9 +94,6 @@ export const UploadPage = () => {
   const handleChange = function(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     if (e.target.files && e.target.files[0]) {
-      console.log("type", e.target.files[0].type);
-      console.log("size", e.target.files[0].size);
-      console.log("size", e.target.files);
       if (excludedTypes.includes(e.target.files[0].type)) {
         window.alert("This file type is not allowed.");
       } else {
@@ -105,7 +101,6 @@ export const UploadPage = () => {
           ...formData,
           fileType: e.target.files[0].type,
           fileSize: e.target.files[0].size,
-          fileTitle: e.target.files[0].name,
         });
         setUplfl(e.target.files[0]);
       }
@@ -180,11 +175,9 @@ export const UploadPage = () => {
     });
     return selectedKey;
   };
-  const cid = "QmY1kYk3tDtwgJojMy8bgM5GRWp5GvCKNE1j4Chkd4BB8s";
   return (
     <div className="upload-file-container">
       <h1>Enter details about the files you want to upload:</h1>
-      <a href={`https://ipfs.io/ipfs/${cid}`}> link</a>
       <form
         id="form-file-upload"
         onDragEnter={handleDrag}

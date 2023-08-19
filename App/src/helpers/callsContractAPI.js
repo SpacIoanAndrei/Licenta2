@@ -91,6 +91,9 @@ export const getPersonalFiles = async (usersContract, userAddress) => {
           likes: parseInt(result.likes),
           pastOwners: result.pastOwners,
           priceForTransfer: result.priceForTransfer,
+          connectedTags: result.conenctedTags.map((tag) =>
+            window.web3.utils.hexToUtf8(tag)
+          ),
         });
         return result;
       })
@@ -123,5 +126,70 @@ export const changePriceForfile = async (
     const result = await usersContract.methods
       .editPrice(payload.fileId, payload.newPrice)
       .send({ from: userAddress });
+  }
+};
+
+export const saveNewTags = async (payload, usersContract, userAddress) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .addNewTagsToFile(payload.fileId, payload.newTags)
+      .send({ from: userAddress });
+  }
+};
+
+export const saveTagsToFile = async (payload, usersContract, userAddress) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .addTagsToFile(payload.fileId, payload.existingTags)
+      .send({ from: userAddress });
+  }
+};
+
+export const getAllTagsAvailable = async (usersContract, userAddress) => {
+  if (usersContract !== null) {
+    const rawTags = await usersContract.methods.getAllTags().call();
+    const formattedArray = rawTags.map((tag) =>
+      window.web3.utils.hexToUtf8(tag)
+    );
+    return formattedArray;
+  }
+};
+
+export const getFilesByTag = async (
+  selectedTag,
+  usersContract,
+  userAddress
+) => {
+  if (usersContract !== null) {
+    let filesArray = [];
+    const fileIds = await usersContract.methods
+      .getFilesForTag(window.web3.utils.fromAscii(selectedTag))
+      .call();
+
+    const results = await Promise.all(
+      fileIds.map(async (fileId) => {
+        const result = await usersContract.methods.getFile(fileId).call();
+        const readableCountry = window.web3.utils.hexToUtf8(result.country);
+        filesArray.push({
+          fileId: fileId,
+          fileTitle: result.fileTitle,
+          fileReference: result.fileReference,
+          fileSize: parseInt(result.fileSize),
+          fileType: result.fileType,
+          description: result.description,
+          country: readableCountry,
+          ownershipRights: result.ownershipRights,
+          uploadDate: result.uploadDate,
+          likes: parseInt(result.likes),
+          pastOwners: result.pastOwners,
+          priceForTransfer: result.priceForTransfer,
+          connectedTags: result.conenctedTags.map((tag) =>
+            window.web3.utils.hexToUtf8(tag)
+          ),
+        });
+        return result;
+      })
+    );
+    return filesArray;
   }
 };

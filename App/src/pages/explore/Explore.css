@@ -1,7 +1,8 @@
 .explore-container {
   padding: 30px;
   width: 100%;
-  height: 100vh;
+  min-height: calc(100vh - 72px);
+  height: 100%;
   background: linear-gradient(170deg, #e6faff 50%, #b3f0ff 90%);
 }
 .explore-title {
@@ -10,8 +11,7 @@
 }
 .explore-layout {
   display: grid;
-  grid-template-columns: 250px 1fr;
-  /* height: 100vh; */
+  grid-template-columns: 300px 1fr;
 }
 .explore-tags {
   display: flex;
@@ -27,12 +27,13 @@
   min-height: calc(100vh - 72px);
 }
 .tag-option {
-  width: 200px;
-  height: 40px;
+  width: 250px;
+  height: 45px;
   text-align: center;
-  padding-top: 6px;
-  border-radius: 12px;
-  background-color: white;
+  padding-top: 10px;
+  background: radial-gradient(white 40%, transparent 80%);
+  border-radius: 40%;
+  transform: scale(1);
 }
 
 :hover.tag-option {
@@ -41,6 +42,7 @@
 }
 .selected-tag {
   cursor: pointer;
-  background-color: #19376d;
+  background: radial-gradient(#19376d 20%, transparent 75%);
   color: #fff;
+  border-radius: 40%;
 }
