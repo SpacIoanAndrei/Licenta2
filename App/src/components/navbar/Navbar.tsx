@@ -1,11 +1,18 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { loginContext } from "../../providers/login/login.provider";
 import "./Navbar.css";
+import { getRoleForCurrent } from "../../helpers/callsContractAPI";
 
 const Navbar = () => {
   const { loggedStatus, userRole } = useContext(loginContext);
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   getRoleForCurrent(usersContract, userAddress).then((result) => {
+  //     setRoleForUser(result);
+  //   });
+  // }, []);
 
   return (
     <div className="header">
@@ -30,16 +37,10 @@ const Navbar = () => {
             <NavLink className="navlink" to="/upload">
               Upload
             </NavLink>
-            <NavLink className="navlink" to="/transfer">
-              Transfer
-            </NavLink>
             {userRole == 3 && (
               <>
-                <NavLink className="navlink" to="/verify">
-                  Verify
-                </NavLink>
-                <NavLink className="navlink" to="/roles">
-                  Roles
+                <NavLink className="navlink" to="/administrative">
+                  Administrative
                 </NavLink>
                 <NavLink className="navlink" to="/stats">
                   Statistics

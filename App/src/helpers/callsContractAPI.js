@@ -203,3 +203,154 @@ export const addALike = async (payload, usersContract, userAddress) => {
   }
   return -1;
 };
+
+export const getUsersCount = async (usersContract) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods.getUserCount().call();
+    return result;
+  }
+  return -1;
+};
+
+export const getUserProfileByIndex = async (userIndex, usersContract) => {
+  let userProfile;
+  if (usersContract !== null) {
+    const resultAddress = await usersContract.methods
+      .getUserAtIndex(userIndex)
+      .call();
+
+    userProfile = await usersContract.methods.getUser(resultAddress).call();
+    return {
+      ...userProfile,
+      userEmail: window.web3.utils.hexToUtf8(userProfile.userEmail),
+      resultAddress: resultAddress,
+    };
+  }
+  return {
+    userEmail: "",
+    dateOfRegistration: 0,
+    firstName: "",
+    lastName: "",
+    country: "",
+    description: "",
+    allowedUploads: 0,
+    index: -1,
+    verifyStatus: 0,
+    uploadingInProgess: false,
+    resultAddress: "",
+  };
+};
+
+export const changeUserByAdmin = async (
+  payload,
+  usersContract,
+  userAddress
+) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .updateUserByAdmin(
+        payload.userAddress,
+        payload.allowedUploads,
+        payload.verifyStatus
+      )
+      .send({ from: userAddress });
+  }
+};
+
+//3-admin, 2-write, 1-read
+export const getRoleForCurrent = async (usersContract, userAddress) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .getRoleForUser(userAddress)
+      .call();
+    console.log("usersContract.methods", result);
+    return result;
+  }
+  return -1;
+};
+
+export const addAdminLevel = async (
+  accountAddress,
+  usersContract,
+  userAddress
+) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .grantAdminRole(accountAddress)
+      .send({ from: userAddress });
+    return result;
+  }
+  return false;
+};
+
+export const addWriteLevel = async (
+  accountAddress,
+  usersContract,
+  userAddress
+) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .grantWriteRole(accountAddress)
+      .send({ from: userAddress });
+    return result;
+  }
+  return false;
+};
+
+export const addReadLevel = async (
+  accountAddress,
+  usersContract,
+  userAddress
+) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .grantReadRole(accountAddress)
+      .send({ from: userAddress });
+    return result;
+  }
+  return false;
+};
+
+export const deleteAdminLevel = async (
+  accountAddress,
+  usersContract,
+  userAddress
+) => {
+  if (usersContract !== null) {
+    console.log("displayedUser.resultAddress", accountAddress);
+
+    const result = await usersContract.methods
+      .deleteAdminRole(accountAddress)
+      .send({ from: userAddress });
+    return result;
+  }
+  return false;
+};
+
+export const deleteWriteLevel = async (
+  accountAddress,
+  usersContract,
+  userAddress
+) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .deleteWriteRole(accountAddress)
+      .send({ from: userAddress });
+    return result;
+  }
+  return false;
+};
+
+export const deleteReadLevel = async (
+  accountAddress,
+  usersContract,
+  userAddress
+) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .deleteReadRole(accountAddress)
+      .send({ from: userAddress });
+    return result;
+  }
+  return false;
+};

@@ -92,7 +92,7 @@ const LoginProvider = (props) => {
       setUserAddress(accounts[0]);
       try {
         const result = await usersConnectedContract.methods
-          .getRoleForUser()
+          .getRoleForUser(accounts[0])
           .call();
         console.log("result", result);
         setUserRole(result);

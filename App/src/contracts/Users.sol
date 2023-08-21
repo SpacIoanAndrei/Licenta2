@@ -140,7 +140,7 @@ contract Users {
         _deleteRole(Admin, _account);
     }
     else {
-        revert("Admin not authorized to delete owner");
+        revert("Admin not authorized to delete own2er");
     }
   }
   function deleteWriteRole(address _account) external onlyRole(Admin) {
@@ -153,12 +153,12 @@ contract Users {
     _deleteRole(Read, _account);
   }
 
-  function getRoleForUser() external view returns(uint8 role){
-    if (roles[Admin][msg.sender]){
+  function getRoleForUser(address userAccount) external view returns(uint8 role){
+    if (roles[Admin][userAccount]){
       return 3;
-    } else if (roles[Write][msg.sender]){
+    } else if (roles[Write][userAccount]){
       return 2;
-    } else if (roles[Read][msg.sender]){
+    } else if (roles[Read][userAccount]){
       return 1;
     }
     return 0;
@@ -336,18 +336,18 @@ contract Users {
     return fileId;
   }
 
-  function editFileTehnical( uint fileId,
-    string memory fileReference,
-    uint fileSize,
-    string memory fileType) public onlyRole(Write) returns(uint index) {
-    require(fileId < fileCounter, "No file has this id");
+  // function editFileTehnical( uint fileId,
+  //   string memory fileReference,
+  //   uint fileSize,
+  //   string memory fileType) public onlyRole(Write) returns(uint index) {
+  //   require(fileId < fileCounter, "No file has this id");
 
-    files[fileId].fileReference = fileReference;
-    files[fileId].fileSize = fileSize;
-    files[fileId].fileType = fileType;
+  //   files[fileId].fileReference = fileReference;
+  //   files[fileId].fileSize = fileSize;
+  //   files[fileId].fileType = fileType;
 
-    return fileId;
-  }
+  //   return fileId;
+  // }
   //edit price for transfer
   function editPrice( uint fileId, uint newPrice) external onlyRole(Write) returns(uint index) {
     require(fileId < fileCounter, "No file has this id");

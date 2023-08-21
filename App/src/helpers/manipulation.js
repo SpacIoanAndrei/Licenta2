@@ -32,6 +32,34 @@ export const getVerificationStatusString = (status) => {
   }
 };
 
+export const getVerificationStatusSString = (status) => {
+  switch (status) {
+    case "0":
+      return "Not Verified";
+    case "1":
+      return "Verification Requested";
+    case "2":
+      return "Verified";
+    default:
+      return "Unknown";
+  }
+};
+
+export const getRoleNameForString = (status) => {
+  switch (status) {
+    case "0":
+      return "Banned";
+    case "1":
+      return "Read";
+    case "2":
+      return "Write and Read";
+    case "3":
+      return "Admin";
+    default:
+      return "Unknown";
+  }
+};
+
 export const getRightsCategoryString = (category) => {
   switch (category) {
     case "0":

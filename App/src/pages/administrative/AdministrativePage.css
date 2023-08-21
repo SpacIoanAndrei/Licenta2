@@ -1,0 +1,51 @@
+.admin-container {
+  padding-top: 40px;
+  padding-left: 80px;
+  padding-right: 80px;
+  width: 100%;
+  min-height: calc(100vh - 72px);
+  height: 100%;
+  background: linear-gradient(170deg, #e6faff 50%, #b3f0ff 90%);
+}
+.pagination-users {
+  display: flex;
+  justify-content: space-between;
+}
+.user-details-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-left: 30%;
+  margin-bottom: 30px;
+}
+.info-line-wrapper {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+}
+.actions-admin-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.status-wrapper {
+  margin-top: 30px;
+  border: 2px solid white;
+  border-radius: 15px;
+  padding: 35px 50px;
+  display: flex;
+  flex-direction: column;
+}
+.status-line-1 {
+  display: grid;
+  grid-template-columns: 180px 1fr 1fr;
+}
+.roles-wrapper {
+  margin-top: 30px;
+  border: 2px solid white;
+  border-radius: 15px;
+  padding: 35px 50px;
+  display: grid;
+  grid-template-columns: 300px 1fr 1fr 1fr;
+  align-items: center;
+  gap: 20px;
+}

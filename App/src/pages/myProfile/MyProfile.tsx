@@ -232,6 +232,17 @@ export const MyProfilePage = () => {
                   title={"Cancel Account Verification"}
                 />
               )}
+              {currentUser.verifyStatus === 2 && (
+                <>
+                  <span>
+                    To increase allowed uploads, request verification again:
+                  </span>
+                  <CustomButton
+                    onClick={() => handleRequestVerify(1)}
+                    title={"Another Verification"}
+                  />
+                </>
+              )}
             </div>
           </>
         )}

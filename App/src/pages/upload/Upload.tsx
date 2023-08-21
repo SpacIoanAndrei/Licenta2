@@ -126,23 +126,21 @@ export const UploadPage = () => {
   const submitButton = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-    let cid = "QmePTXBtrjUPny3ShMM2Vj5DaYFLHfRRYyNkYTgYcVtCjr";
+    let cid = "";
     //upload to ipfs
-    // if (uplfl) {
-    //   let ipfs = await ipfsClient();
-    //   try {
-    //     const fileForUpload = new Blob([uplfl], {
-    //       type: uplfl.type,
-    //     });
+    if (uplfl) {
+      let ipfs = await ipfsClient();
+      try {
+        const fileForUpload = new Blob([uplfl], {
+          type: uplfl.type,
+        });
 
-    //     const result = await ipfs.add(fileForUpload);
-    //     cid = result.cid.toString();
-    //   } catch (error) {
-    //     console.error("Error uploading file to IPFS:", error);
-    //   }
-
-    //   //return; // No need to show alert if a file is selected and processed
-    // }
+        const result = await ipfs.add(fileForUpload);
+        cid = result.cid.toString();
+      } catch (error) {
+        console.error("Error uploading file to IPFS:", error);
+      }
+    }
     console.log("cid", cid);
     if (cid.length > 0 && uplfl) {
       //save to blockchain
@@ -163,6 +161,7 @@ export const UploadPage = () => {
     }
     //no more get the file from ipfs: QmY1kYk3tDtwgJojMy8bgM5GRWp5GvCKNE1j4Chkd4BB8s
     //no more get the image from ipfs: QmePTXBtrjUPny3ShMM2Vj5DaYFLHfRRYyNkYTgYcVtCjr
+    //get the archive from ipfs:QmNX3cvQJqgkmWJu1dsKsHWmJB987N6756QxmUPQAVk9us
 
     setLoading(false);
     // alert("No files selected");

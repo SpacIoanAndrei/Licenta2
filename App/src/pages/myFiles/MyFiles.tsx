@@ -41,6 +41,12 @@ export const MyFilesPage = () => {
               priceForTransfer={pf.priceForTransfer}
             />
           ))}
+          {personalFiles.length == 0 && (
+            <h2>
+              You have no uploaded files. Go to upload page to add a new item to
+              your collection.
+            </h2>
+          )}
         </div>
       ) : (
         <CustomLoader size="100px" />
