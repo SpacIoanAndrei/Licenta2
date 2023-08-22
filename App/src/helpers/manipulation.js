@@ -54,7 +54,7 @@ export const getRoleNameForString = (status) => {
     case "2":
       return "Write and Read";
     case "3":
-      return "Admin";
+      return "Administrator";
     default:
       return "Unknown";
   }
@@ -100,6 +100,18 @@ export const getCurrentBalance = async (account, web3) => {
   if (web3 && account) {
     const balanceWei = await web3.eth.getBalance(account);
     const balanceEth = web3.utils.fromWei(balanceWei, "ether");
+    return balanceEth;
+  }
+};
+export const getPriceInWei = async (number, web3) => {
+  if (web3) {
+    const priceEth = await web3.utils.toWei(number, "ether");
+    return priceEth;
+  }
+};
+export const getPriceInEth = async (numberWei, web3) => {
+  if (web3) {
+    const balanceEth = web3.utils.fromWei(numberWei, "ether");
     return balanceEth;
   }
 };

@@ -40,7 +40,9 @@ export const ExplorePage = () => {
   return (
     <div className="explore-container">
       {loggedStatus ? (
-        <h1 className="explore-title">Find other uploaded files:</h1>
+        <h1 className="explore-title">
+          Discover other uploaded files on Ethereum chain: {selectedTag}
+        </h1>
       ) : (
         <h1>Tags are loading </h1>
       )}

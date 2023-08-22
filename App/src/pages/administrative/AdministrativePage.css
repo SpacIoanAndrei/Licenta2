@@ -2,6 +2,7 @@
   padding-top: 40px;
   padding-left: 80px;
   padding-right: 80px;
+  padding-bottom: 30px;
   width: 100%;
   min-height: calc(100vh - 72px);
   height: 100%;
@@ -28,7 +29,8 @@
   gap: 10px;
 }
 .status-wrapper {
-  margin-top: 30px;
+  margin-top: 10px;
+  margin-bottom: 40px;
   border: 2px solid white;
   border-radius: 15px;
   padding: 35px 50px;
@@ -40,12 +42,19 @@
   grid-template-columns: 180px 1fr 1fr;
 }
 .roles-wrapper {
-  margin-top: 30px;
+  margin-top: 10px;
   border: 2px solid white;
   border-radius: 15px;
   padding: 35px 50px;
+  display: flex;
+  flex-direction: column;
+}
+.admin-buttons-container {
   display: grid;
   grid-template-columns: 300px 1fr 1fr 1fr;
   align-items: center;
   gap: 20px;
+}
+.legend-container {
+  padding-top: 18px;
 }

@@ -3,7 +3,7 @@ import { Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
 import CustomButton from "../../components/button/CustomButton";
 import CustomLoader from "../../components/loader/loader";
 import "./Upload.css";
-import { convertSizeToMBGB } from "../../helpers/manipulation";
+import { convertSizeToMBGB, getPriceInWei } from "../../helpers/manipulation";
 import { loginContext } from "../../providers/login/login.provider";
 import { storeFile } from "../../helpers/callsContractAPI";
 const { create } = require("ipfs-http-client");
@@ -53,7 +53,7 @@ export const UploadPage = () => {
     priceForTransfer: "",
   });
   const [loading, setLoading] = useState(false);
-  const { usersContract, userAddress } = useContext(loginContext);
+  const { usersContract, userAddress, sessionWeb3 } = useContext(loginContext);
   const excludedTypes = ["application/x-msdownload", "application/x-dosexec"];
 
   const handleDrag = function(
@@ -125,25 +125,36 @@ export const UploadPage = () => {
 
   const submitButton = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoading(true);
-    let cid = "";
-    //upload to ipfs
-    if (uplfl) {
-      let ipfs = await ipfsClient();
-      try {
-        const fileForUpload = new Blob([uplfl], {
-          type: uplfl.type,
-        });
+    // let priceInWeiForSave = getPriceInWei(
+    //   formData.priceForTransfer,
+    //   sessionWeb3
+    // ).then((result) => {
+    //   console.log("incredibil", result);
+    // });
 
-        const result = await ipfs.add(fileForUpload);
-        cid = result.cid.toString();
-      } catch (error) {
-        console.error("Error uploading file to IPFS:", error);
-      }
-    }
+    setLoading(true);
+    let cid = "QmNX3cvQJqgkmWJu1dsKsHWmJB987N6756QxmUPQAVk9us";
+    //upload to ipfs
+    // if (uplfl) {
+    //   let ipfs = await ipfsClient();
+    //   try {
+    //     const fileForUpload = new Blob([uplfl], {
+    //       type: uplfl.type,
+    //     });
+
+    //     const result = await ipfs.add(fileForUpload);
+    //     cid = result.cid.toString();
+    //   } catch (error) {
+    //     console.error("Error uploading file to IPFS:", error);
+    //   }
+    // }
     console.log("cid", cid);
     if (cid.length > 0 && uplfl) {
       //save to blockchain
+      let priceInWeiForSave = await getPriceInWei(
+        formData.priceForTransfer,
+        sessionWeb3
+      );
       const payload = {
         userAddress: userAddress,
         fileTitle: formData.fileTitle,
@@ -153,7 +164,7 @@ export const UploadPage = () => {
         description: formData.description,
         country: formData.country,
         ownershipRights: formData.ownershipRights,
-        priceForTransfer: formData.priceForTransfer,
+        priceForTransfer: priceInWeiForSave,
       };
       storeFile(payload, usersContract, userAddress).then(() =>
         setLoading(false)
@@ -161,7 +172,7 @@ export const UploadPage = () => {
     }
     //no more get the file from ipfs: QmY1kYk3tDtwgJojMy8bgM5GRWp5GvCKNE1j4Chkd4BB8s
     //no more get the image from ipfs: QmePTXBtrjUPny3ShMM2Vj5DaYFLHfRRYyNkYTgYcVtCjr
-    //get the archive from ipfs:QmNX3cvQJqgkmWJu1dsKsHWmJB987N6756QxmUPQAVk9us
+    //get the archive from ipfs: QmNX3cvQJqgkmWJu1dsKsHWmJB987N6756QxmUPQAVk9us
 
     setLoading(false);
     // alert("No files selected");
@@ -176,7 +187,17 @@ export const UploadPage = () => {
   };
   return (
     <div className="upload-file-container">
-      <h1>Enter details about the files you want to upload:</h1>
+      <h2>
+        This data will be saved on Ethereum blockchain, as soon as these steps
+        are completed:
+      </h2>
+      <ul>
+        <li>You complete all fields about the item to be uploaded;</li>
+        <li>The Content Identifier from IPFS is available;</li>
+        <li>Transaction is confirmed in metamask (a pop up will open);</li>
+        <li>Data is queued for mining;</li>
+      </ul>
+      <h2>Enter details about the files you want to upload on the platform:</h2>
       <form
         id="form-file-upload"
         onDragEnter={handleDrag}
@@ -196,7 +217,7 @@ export const UploadPage = () => {
         </Row>
         <Row className="mb-3">
           <Form.Group controlId="formGridlabel" className="col">
-            <Form.Label>Description</Form.Label>
+            <Form.Label>File Description</Form.Label>
             <Form.Control
               as="textarea"
               rows={5}
@@ -221,7 +242,7 @@ export const UploadPage = () => {
         </Row>
         <Row className="mb-3">
           <Form.Group controlId="priceForTransfer" className="col">
-            <Form.Label>Price For Transfer</Form.Label>
+            <Form.Label>Price For Transfer in Ethereum:</Form.Label>
             <Form.Control
               type="number"
               name="priceForTransfer"

@@ -1,9 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import myImage from "../../bank.png";
+import SimbolImage from "../../helpers/images/SimbolImage.png";
+import UnknownImage from "../../helpers/images/unknown.jpg";
+import ZIPImage from "../../helpers/images/SimbolZIP.png";
+import PfdImage from "../../helpers/images/SimbolPDF.jpg";
+
 import "./SmallCardFile.css";
 import {
   convertSizeToMBGB,
   convertTimestampToDate,
+  getPriceInEth,
   getRightsCategoryString,
 } from "../../helpers/manipulation";
 import CustomButton from "../button/CustomButton";
@@ -24,7 +29,7 @@ interface SmallCardFileProp {
   uploadDate: number;
   likes: number;
   pastOwners: [];
-  priceForTransfer: [];
+  priceForTransfer: [0];
 }
 
 export const SmallCardFile = ({
@@ -43,9 +48,18 @@ export const SmallCardFile = ({
   priceForTransfer,
 }: SmallCardFileProp) => {
   const [isHovered, setIsHovered] = useState(false);
-  const { usersContract, userAddress } = useContext(loginContext);
+  const { usersContract, userAddress, sessionWeb3 } = useContext(loginContext);
   const [localLikes, setlocalLikes] = useState(likes);
+  const [localPrice, setLocalPrice] = useState();
 
+  useEffect(() => {
+    console.log("priceForTransfer ", priceForTransfer);
+    if (priceForTransfer[priceForTransfer.length - 1])
+      getPriceInEth(
+        priceForTransfer[priceForTransfer.length - 1].toString(),
+        sessionWeb3
+      ).then((result) => setLocalPrice(result));
+  }, [priceForTransfer]);
   const addLike = () => {
     const payload = {
       fileId,
@@ -55,6 +69,20 @@ export const SmallCardFile = ({
       console.log("return from like", result);
       setlocalLikes(localLikes + 1);
     });
+  };
+
+  const getImage = (fileType: string) => {
+    switch (fileType) {
+      case "getImage":
+        return SimbolImage;
+      case "application/pdf":
+        return PfdImage;
+      case "application/x-zip-compressed":
+        return ZIPImage;
+
+      default:
+        return UnknownImage;
+    }
   };
   return (
     <div
@@ -69,7 +97,7 @@ export const SmallCardFile = ({
       <div>
         <img
           className="image-container"
-          src={myImage}
+          src={getImage(fileType)}
           alt="presentation for tag"
           onClick={() => window.open("https://ipfs.io/ipfs/" + fileReference)}
         ></img>
@@ -77,25 +105,39 @@ export const SmallCardFile = ({
       <div className="info-container">
         <div className="title">{fileTitle}</div>
         <div className="info-line">
-          <span>{convertTimestampToDate(uploadDate)}</span>
+          <span>Content Identifier: {fileReference}</span>
+        </div>
+        <div className="info-line">
+          <span>Price: {localPrice} ETH</span>
           <span>Likes: {localLikes}</span>
         </div>
 
-        {isHovered && (
+        {isHovered ? (
           <>
             <div className="description-wrapper">{description}</div>
+
             <div className="info-line">
               <span>Country: {country}</span>
-              <span>{getRightsCategoryString(ownershipRights)}</span>
+              <span>Rights: {getRightsCategoryString(ownershipRights)}</span>
             </div>
             <div className="info-line">
-              <span>{fileType}</span>
+              <span>Type:{fileType}</span>
               <span>{convertSizeToMBGB(fileSize)}</span>
             </div>
             <div className="info-line">
-              <span>
-                Price: {priceForTransfer[priceForTransfer.length - 1]}
-              </span>
+              <span>Upload date: {convertTimestampToDate(uploadDate)}</span>
+            </div>
+            <div className="info-line">
+              <span>Transfers: {pastOwners.length - 1}</span>
+            </div>
+            <div className="info-line">
+              <div>Owner address:</div>
+            </div>
+            {pastOwners[pastOwners.length - 1]}
+            <div className="info-line">
+              <div>Chain: Ethereum</div>
+            </div>
+            <div className="info-line">
               {isEditable ? (
                 <Link to={`/editFile?customId=${fileReference}`}>
                   <CustomButton
@@ -106,10 +148,22 @@ export const SmallCardFile = ({
                   />
                 </Link>
               ) : (
-                <CustomButton onClick={addLike} title={"Like"} />
+                <>
+                  <CustomButton onClick={addLike} title={"Like"} />
+                  <Link to={`/transferFile?customId=${fileReference}`}>
+                    <CustomButton
+                      onClick={() => {
+                        sessionStorage.setItem("reference", fileReference);
+                      }}
+                      title={"Transfer"}
+                    />
+                  </Link>
+                </>
               )}
             </div>
           </>
+        ) : (
+          <div className="see-details">See more details</div>
         )}
       </div>
     </div>

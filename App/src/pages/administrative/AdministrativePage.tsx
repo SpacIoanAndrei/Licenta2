@@ -169,12 +169,13 @@ export const AdministrativePage = () => {
 
   return (
     <div className="admin-container">
+      <h2>Information about accounts and possible changes</h2>
       <div className="pagination-users">
         <div>
           {userIndex > 0 && (
             <CustomButton
               onClick={() => setUserIndex(userIndex - 1)}
-              title={"Previous user"}
+              title={"Previous account"}
             />
           )}
         </div>
@@ -184,15 +185,15 @@ export const AdministrativePage = () => {
           {getUpperLimit() && (
             <CustomButton
               onClick={() => setUserIndex(userIndex + 1)}
-              title={"Next user"}
+              title={"Next account"}
             />
           )}
         </div>
       </div>
       <div className="user-details-wrapper">
         <div className="info-line-wrapper">
-          <span>User's index:</span>
-          <span>{userIndex}</span>
+          <span>User's wallet address:</span>
+          <span>{displayedUser.resultAddress}</span>
         </div>
         <div className="info-line-wrapper">
           <span>User's email:</span>
@@ -206,79 +207,119 @@ export const AdministrativePage = () => {
           <span>User's last name:</span>
           <span>{displayedUser.lastName}</span>
         </div>
+        <div className="info-line-wrapper">
+          <span>User's account description:</span>
+          <span>{displayedUser.description}</span>
+        </div>
       </div>
 
       <div className="actions-admin-wrapper">
+        <h2>Status settings</h2>
         <div className="status-wrapper">
           <div className="status-line-1">
-            <span>Account's status:</span>
+            <span>Current status:</span>
             <span>
               {getVerificationStatusSString(displayedUser.verifyStatus)}
             </span>
-            {displayedUser.verifyStatus == "1" && (
+            {/* {displayedUser.verifyStatus == "1" && ( */}
+            <CustomButton
+              onClick={handleChangeUserByAdmin}
+              title={"Set status to Verified"}
+              disabled={displayedUser.verifyStatus != "1"}
+            />
+            {/* )} */}
+          </div>
+          {/* {displayedUser.verifyStatus == "1" && ( */}
+          <div className="status-line-2">
+            <div>Number of allowed uploads: {displayedUser.allowedUploads}</div>
+            <span>Change number to: &nbsp; &nbsp; &nbsp; &nbsp; </span>
+            <input
+              style={{
+                height: "38px",
+                padding: "6px 12px",
+                border: "1px solid #ced4da",
+                borderRadius: "0.25rem",
+              }}
+              type="number"
+              onChange={hanfleNrAllowedUP}
+              disabled={displayedUser.verifyStatus != "1"}
+            />
+          </div>
+          {/* )} */}
+        </div>
+        <h2>Roles settings</h2>
+        <div className="roles-wrapper">
+          <div className="admin-buttons-container">
+            <span>
+              Current permission level: {getRoleNameForString(roleForUser)}
+            </span>
+            {roleForUser == 3 && (
               <CustomButton
-                onClick={handleChangeUserByAdmin}
-                title={"Set status to Verified"}
+                onClick={handleCancelAdmin}
+                title={"Cancel Admin"}
               />
             )}
+            {roleForUser == 2 && (
+              <>
+                <CustomButton
+                  onClick={() => {
+                    handleCancelWrite();
+                    handleReadWrite();
+                  }}
+                  title={"Deny Write and Read"}
+                />
+                <CustomButton
+                  onClick={handleCancelWrite}
+                  title={"Deny Write"}
+                />
+                <CustomButton onClick={handleAddAdmin} title={"Make Admin"} />
+              </>
+            )}
+            {roleForUser == 1 && (
+              <>
+                <CustomButton
+                  onClick={handleWriteAdmin}
+                  title={"Allow Write"}
+                />
+              </>
+            )}
+            {roleForUser == 0 && (
+              <>
+                <CustomButton onClick={handleReadAdmin} title={"Allow Read"} />
+                <CustomButton
+                  onClick={() => {
+                    handleReadAdmin();
+                    handleWriteAdmin();
+                  }}
+                  title={"Allow Read and Write"}
+                />
+              </>
+            )}
           </div>
-          {displayedUser.verifyStatus == "1" && (
-            <div className="status-line-2">
-              <div>
-                Number of allowed uploads: {displayedUser.allowedUploads}
-              </div>
-              <span>Change number to: &nbsp; &nbsp; &nbsp; &nbsp; </span>
-              <input
-                style={{
-                  height: "38px",
-                  padding: "6px 12px",
-                  border: "1px solid #ced4da",
-                  borderRadius: "0.25rem",
-                }}
-                type="number"
-                onChange={hanfleNrAllowedUP}
-              />
-            </div>
-          )}
-        </div>
-        <div className="roles-wrapper">
-          <span>
-            Current permission level: {getRoleNameForString(roleForUser)}
-          </span>
-          {roleForUser == 3 && (
-            <CustomButton onClick={handleCancelAdmin} title={"Cancel Admin"} />
-          )}
-          {roleForUser == 2 && (
-            <>
-              <CustomButton
-                onClick={() => {
-                  handleCancelWrite();
-                  handleReadWrite();
-                }}
-                title={"Deny Write and Read"}
-              />
-              <CustomButton onClick={handleCancelWrite} title={"Deny Write"} />
-              <CustomButton onClick={handleAddAdmin} title={"Make Admin"} />
-            </>
-          )}
-          <CustomButton onClick={handleAddAdmin} title={"Make Admin"} />
-          {roleForUser == 1 && (
-            <>
-              <CustomButton onClick={handleWriteAdmin} title={"Allow Write"} />
-            </>
-          )}
-          {roleForUser == 0 && (
-            <>
-              <CustomButton onClick={handleReadAdmin} title={"Allow Read"} />
-              <CustomButton
-                onClick={() => {
-                  handleReadAdmin();
-                  handleWriteAdmin();
-                }}
-                title={"Allow Read and Write"}
-              />
-            </>
-          )}
+          <div className="legend-container">
+            <ul>
+              <li>
+                Read: This allows the users to see their account information as
+                well as the files they uploaded. They can not upload new data,
+                make chenges to their account details or uploaded files.
+              </li>
+              <li>
+                Write: This permission level contains all the action from Read,
+                and more: users can modify any personal data and can perform any
+                action related to files.{" "}
+              </li>
+              <li>
+                Administrator: They can increase or decrease the limit of
+                uploads for each account. They can change permission levels for
+                other accounts, apart of the owner. Includes Read and Write
+                permission.
+              </li>
+              <li>
+                Banned: the user is banned from the platform and can not
+                interact with any feature or personal data.
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
