@@ -7,6 +7,7 @@ import CustomLoader from "../../components/loader/loader";
 import { useCurrentUser } from "../../providers/currentUser.provider";
 import {
   convertTimestampToDate,
+  getCurrentBalance,
   getVerificationStatusString,
 } from "../../helpers/manipulation";
 import {
@@ -17,9 +18,10 @@ import {
 import "./MyProfile.css";
 
 export const MyProfilePage = () => {
-  const { usersContract, userAddress } = useContext(loginContext);
+  const { usersContract, userAddress, sessionWeb3 } = useContext(loginContext);
   const [loading, setLoading] = useState(false);
   const { currentUser, updateCurrentUser } = useCurrentUser();
+  const [balance, setBalance] = useState();
 
   const [form, setForm] = useState({
     userEmail: currentUser.userEmail,
@@ -92,6 +94,15 @@ export const MyProfilePage = () => {
           window.alert("Complete log in process");
           setLoading(false);
         });
+      const fetchBalance = async () => {
+        if (sessionWeb3) {
+          getCurrentBalance(userAddress, sessionWeb3).then((result) =>
+            setBalance(result)
+          );
+        }
+      };
+
+      fetchBalance();
     } else {
       setForm({
         userEmail: currentUser.userEmail,
@@ -129,7 +140,7 @@ export const MyProfilePage = () => {
 
   return (
     <div className="profile-container">
-      <h1>Your account details:</h1>
+      <h1>Blockchain account details:</h1>
       <div className="content-columns">
         <form className="container mt-3" onSubmit={submitButton}>
           <Row className="mb-3">
@@ -172,7 +183,10 @@ export const MyProfilePage = () => {
           </Row>
           <Row className="mb-3">
             <Form.Group className=" col col-sm-6" controlId="formGridAddress1">
-              <Form.Label>Country</Form.Label>
+              <Form.Label>
+                Country (the rights for files will be applied based on this
+                country)
+              </Form.Label>
               <Form.Control
                 className="form-control"
                 type="text"
@@ -184,7 +198,9 @@ export const MyProfilePage = () => {
           </Row>
           <Row className="mb-3">
             <Form.Group controlId="formGridlabel" className="col col-sm-6">
-              <Form.Label>Description</Form.Label>
+              <Form.Label>
+                Description (useful for account verification)
+              </Form.Label>
               <Form.Control
                 as="textarea"
                 rows="{3}"
@@ -199,50 +215,66 @@ export const MyProfilePage = () => {
             <CustomButton
               type="submit"
               variant="dark"
-              title="Save"
+              title="Save details"
               onClick={() => {}}
             />
             {loading && <CustomLoader />}
             <CustomButton
               type="reset"
               variant="light"
-              title="Reset"
+              title="Reset fields"
               onClick={resetButton}
             />
           </Row>
         </form>
         {currentUser.index !== -1 && (
           <>
-            <div className="right-section">
-              <span className="extra-info">Date of registration</span>
-              {convertTimestampToDate(currentUser.dateOfRegistration)}
-              <span className="extra-info">Allowed uploaded files</span>
-              {currentUser.allowedUploads}
-              <span className="extra-info">Status for this account</span>
-              {getVerificationStatusString(currentUser.verifyStatus)}
-              {currentUser.verifyStatus === 0 && (
-                <CustomButton
-                  onClick={() => handleRequestVerify(1)}
-                  title={"Request Account Verification"}
-                />
-              )}
-              {currentUser.verifyStatus === 1 && (
-                <CustomButton
-                  onClick={() => handleRequestVerify(0)}
-                  title={"Cancel Account Verification"}
-                />
-              )}
-              {currentUser.verifyStatus === 2 && (
-                <>
-                  <span>
-                    To increase allowed uploads, request verification again:
-                  </span>
+            <div className="right-section-wrapper">
+              <div className="right-section">
+                <span className="extra-info">Wallet balance:</span>
+                {balance} ETH
+                <span className="extra-info">Date of registration</span>
+                {convertTimestampToDate(currentUser.dateOfRegistration)}
+                <span className="extra-info">Allowed uploaded files</span>
+                {currentUser.allowedUploads}
+                <span className="extra-info">Status for this account</span>
+                {getVerificationStatusString(currentUser.verifyStatus)}
+                {currentUser.verifyStatus === 0 && (
                   <CustomButton
+                    variant="dark"
                     onClick={() => handleRequestVerify(1)}
-                    title={"Another Verification"}
+                    title={"Request Account Verification"}
                   />
-                </>
-              )}
+                )}
+                {currentUser.verifyStatus === 1 && (
+                  <CustomButton
+                    variant="dark"
+                    onClick={() => handleRequestVerify(0)}
+                    title={"Cancel Account Verification"}
+                  />
+                )}
+                {currentUser.verifyStatus === 2 && (
+                  <>
+                    <span>
+                      To increase allowed uploads, request verification again:
+                    </span>
+                    <CustomButton
+                      variant="dark"
+                      onClick={() => handleRequestVerify(1)}
+                      title={"Another Verification"}
+                    />
+                  </>
+                )}
+              </div>
+              <div className="extra-details-wrapper">
+                {" "}
+                <p> </p>
+                <p>
+                  Account verification will be done by an administrator and
+                  could lead to an increase in the number of uploaded files from
+                  this account.
+                </p>
+              </div>
             </div>
           </>
         )}

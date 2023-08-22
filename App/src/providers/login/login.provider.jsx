@@ -8,6 +8,7 @@ export const loginContext = createContext({
   usersContract: null,
   userAddress: "",
   userRole: 0,
+  sessionWeb3: {},
   handleLogin: () => {},
   handleLogout: () => {},
 });
@@ -17,6 +18,7 @@ const LoginProvider = (props) => {
   const [usersContract, setUsersContract] = useState();
   const [userAddress, setUserAddress] = useState();
   const [userRole, setUserRole] = useState();
+  const [sessionWeb3, setSessionWeb3] = useState();
 
   const navigate = useNavigate();
 
@@ -86,7 +88,7 @@ const LoginProvider = (props) => {
         Users.abi,
         usersContractData.address
       );
-
+      setSessionWeb3(web3);
       setUsersContract(usersConnectedContract);
       //get current user
       setUserAddress(accounts[0]);
@@ -121,6 +123,7 @@ const LoginProvider = (props) => {
         usersContract,
         userAddress,
         userRole,
+        sessionWeb3,
         handleLogin,
         handleLogout,
       }}

@@ -95,3 +95,11 @@ export const tagsStringToArray = (inputString) => {
   );
   return formattedArray;
 };
+
+export const getCurrentBalance = async (account, web3) => {
+  if (web3 && account) {
+    const balanceWei = await web3.eth.getBalance(account);
+    const balanceEth = web3.utils.fromWei(balanceWei, "ether");
+    return balanceEth;
+  }
+};

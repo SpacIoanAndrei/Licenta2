@@ -5,7 +5,7 @@ import "./Navbar.css";
 import { getRoleForCurrent } from "../../helpers/callsContractAPI";
 
 const Navbar = () => {
-  const { loggedStatus, userRole } = useContext(loginContext);
+  const { loggedStatus, userRole, userAddress } = useContext(loginContext);
   const navigate = useNavigate();
 
   // useEffect(() => {
@@ -18,7 +18,7 @@ const Navbar = () => {
     <div className="header">
       <div className="leftSection">
         <NavLink className="navlink" to="/">
-          Home
+          FileVault
         </NavLink>
         <NavLink className="navlink" to="/explore">
           Explore
@@ -31,28 +31,33 @@ const Navbar = () => {
             <NavLink className="navlink" to="/myFiles">
               My files
             </NavLink>
-            <NavLink className="navlink" to="/editFile">
+            {/* <NavLink className="navlink" to="/editFile">
               Edit file
-            </NavLink>
+            </NavLink> */}
             <NavLink className="navlink" to="/upload">
               Upload
             </NavLink>
             {userRole == 3 && (
               <>
                 <NavLink className="navlink" to="/administrative">
-                  Administrative
+                  Accounts Control Panel
                 </NavLink>
-                <NavLink className="navlink" to="/stats">
+                {/* <NavLink className="navlink" to="/stats">
                   Statistics
-                </NavLink>
+                </NavLink> */}
               </>
             )}
           </>
         )}
       </div>
-      {!loggedStatus && (
+      {!loggedStatus ? (
         <div className="navlink" onClick={() => navigate("/login")}>
           LOG IN
+        </div>
+      ) : (
+        <div className="adress-wrapper-header">
+          <div>Connected wallet: </div>
+          <div>{userAddress}</div>
         </div>
       )}
     </div>

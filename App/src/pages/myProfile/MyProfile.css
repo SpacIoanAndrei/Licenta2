@@ -18,6 +18,10 @@
   display: grid;
   grid-template-columns: 80% 20%;
 }
+.right-section-wrapper {
+  display: flex;
+  flex-direction: column;
+}
 .right-section {
   margin-left: -300px;
   margin-right: 100px;
@@ -26,6 +30,12 @@
   display: grid;
   grid-template-columns: auto auto;
   grid-template-rows: 60px 60px 60px 60px;
+}
+.extra-details-wrapper {
+  margin-left: -300px;
+  margin-right: 100px;
+  font-weight: 500;
+  font-size: 16px;
 }
 
 #form-file-upload {
