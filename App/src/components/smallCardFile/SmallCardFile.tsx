@@ -12,9 +12,9 @@ import {
   getRightsCategoryString,
 } from "../../helpers/manipulation";
 import CustomButton from "../button/CustomButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginContext } from "../../providers/login/login.provider";
-import { addALike } from "../../helpers/callsContractAPI";
+import { addALike, makeTransfer } from "../../helpers/callsContractAPI";
 
 interface SmallCardFileProp {
   fileId: number;
@@ -47,10 +47,12 @@ export const SmallCardFile = ({
   pastOwners,
   priceForTransfer,
 }: SmallCardFileProp) => {
+  const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const { usersContract, userAddress, sessionWeb3 } = useContext(loginContext);
   const [localLikes, setlocalLikes] = useState(likes);
   const [localPrice, setLocalPrice] = useState();
+  const [loadingCard, setLoadingCard] = useState(false);
 
   useEffect(() => {
     console.log("priceForTransfer ", priceForTransfer);
@@ -84,6 +86,25 @@ export const SmallCardFile = ({
         return UnknownImage;
     }
   };
+
+  const callTransfer = () => {
+    setLoadingCard(true);
+
+    if (fileId) {
+      const payload = {
+        fileId: fileId,
+        newUserAddress: userAddress,
+        owner: pastOwners[pastOwners.length - 1],
+      };
+      console.log("payload", payload);
+      makeTransfer(payload, usersContract).then(() => {
+        setLoadingCard(false);
+        navigate("/myFiles");
+      });
+    }
+    setLoadingCard(false);
+  };
+
   return (
     <div
       className="small-card-wrapper"
@@ -150,14 +171,30 @@ export const SmallCardFile = ({
               ) : (
                 <>
                   <CustomButton onClick={addLike} title={"Like"} />
-                  <Link to={`/transferFile?customId=${fileReference}`}>
-                    <CustomButton
-                      onClick={() => {
-                        sessionStorage.setItem("reference", fileReference);
-                      }}
-                      title={"Transfer"}
-                    />
-                  </Link>
+
+                  <CustomButton
+                    // onClick={() => {
+                    //   sessionStorage.setItem("fileTitle", fileTitle);
+                    //   sessionStorage.setItem("cid", fileReference);
+                    //   sessionStorage.setItem(
+                    //     "price",
+                    //     priceForTransfer[
+                    //       priceForTransfer.length - 1
+                    //     ].toString()
+                    //   );
+                    //   sessionStorage.setItem(
+                    //     "owner",
+                    //     pastOwners[pastOwners.length - 1]
+                    //   );
+                    //   sessionStorage.setItem("fileId", fileId.toString());
+                    // }}
+                    onClick={callTransfer}
+                    title={"Transfer"}
+                    disabled={
+                      ownershipRights != 1 ||
+                      pastOwners[pastOwners.length - 1] == userAddress
+                    }
+                  />
                 </>
               )}
             </div>

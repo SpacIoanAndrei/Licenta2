@@ -354,3 +354,13 @@ export const deleteReadLevel = async (
   }
   return false;
 };
+
+export const makeTransfer = async (payload, usersContract) => {
+  if (usersContract !== null) {
+    const result = await usersContract.methods
+      .changeOwnerFile(payload.newUserAddress, payload.fileId)
+      .send({ from: payload.owner });
+    return result;
+  }
+  return false;
+};
