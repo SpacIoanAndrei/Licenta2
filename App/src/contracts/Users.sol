@@ -166,7 +166,7 @@ contract Users {
 
 ///----------------------------------------------------- ROLES LOGIC END--------------------------------------
 ////***************************************************** USER LOGIC  ******************************************
-  function isUser(address userAddress) public view returns(bool isRegistered) { //view: do not alter the state of the contract or the blockchain in any way.
+  function isUser(address userAddress) public view returns(bool isRegistered) { 
     if(userPointer.length == 0) return false;
     return (userPointer[userModels[userAddress].index] == userAddress);
   }
@@ -256,14 +256,14 @@ contract Users {
 
 ////***************************************************** USER LOGIC END ***************************************
 
-  function getFilesForAddress(address userAddress) public view returns(uint[] memory filesForAddress){
+  function getFilesForAddress(address userAddress) public onlyRole(Read) view returns(uint[] memory filesForAddress){
     return personalUserfiles[userAddress];
   }
 
-  function getFilesForTag(bytes32 tag) public view returns(uint[] memory filesForTag){
+  function getFilesForTag(bytes32 tag) public onlyRole(Read) view returns(uint[] memory filesForTag){
     return tagFiles[tag];
   }
-  function getFile(uint fileId) public view returns (UploadedFile memory) {
+  function getFile(uint fileId) public onlyRole(Read) view returns (UploadedFile memory) {
     return files[fileId];
   }
 

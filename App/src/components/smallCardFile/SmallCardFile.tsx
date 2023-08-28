@@ -92,7 +92,7 @@ export const SmallCardFile = ({
   const callTransfer = () => {
     setLoadingCard(true);
 
-    if (fileId) {
+    if (fileId >= 0) {
       const payload = {
         fileId: fileId,
         newUserAddress: userAddress,

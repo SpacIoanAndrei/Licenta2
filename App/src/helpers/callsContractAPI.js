@@ -190,24 +190,20 @@ export const getFilesByTag = async (
         return result;
       })
     );
-    console.log("fileResults", fileResults);
 
     let completeFilesArray = [];
     const results = await Promise.all(
-      fileResults.map(async (file) => {
+      filesArray.map(async (file) => {
         const userData = await usersContract.methods
           .getUser(file.pastOwners[file.pastOwners.length - 1])
           .call();
         const readableEmail = window.web3.utils.hexToUtf8(userData.userEmail);
         completeFilesArray.push({
           ...file,
-          country: window.web3.utils.hexToUtf8(file.country),
           ownerEmail: readableEmail,
         });
-        // return result;
       })
     );
-    console.log("completeFilesArray", completeFilesArray);
 
     return completeFilesArray;
   }
