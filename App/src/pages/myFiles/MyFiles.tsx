@@ -22,9 +22,7 @@ export const MyFilesPage = () => {
   return (
     <div className="myfiles-container">
       {loggedStatus && (
-        <h1 className="explore-title">
-          My files uploaded on blockchain and IPFS:{" "}
-        </h1>
+        <h1 className="explore-title">My files from blockchain and IPFS: </h1>
       )}
       {!loading ? (
         <div className="myfiles-layout">
@@ -46,13 +44,13 @@ export const MyFilesPage = () => {
             />
           ))}
           {personalFiles.length == 0 && (
-            <>
+            <div>
               <h2>You have no uploaded files. </h2>
               <h3>
                 Go to upload page to add a new file to IPFS and link it to your
                 account.
               </h3>
-            </>
+            </div>
           )}
         </div>
       ) : (

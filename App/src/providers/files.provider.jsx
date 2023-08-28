@@ -17,6 +17,7 @@ const FilesProvider = (props) => {
       likes: 0,
       pastOwners: [],
       priceForTransfer: [],
+      ownerEmail: "",
       connectedTags: [],
     },
   ]);

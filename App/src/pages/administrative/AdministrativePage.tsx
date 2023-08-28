@@ -108,7 +108,11 @@ export const AdministrativePage = () => {
     addAdminLevel(displayedUser.resultAddress, usersContract, userAddress).then(
       (result) => {
         if (result) setLoadingUsers(false);
-        setUserIndex(userIndex);
+        getRoleForCurrent(usersContract, displayedUser.resultAddress).then(
+          (result) => {
+            setRoleForUser(result);
+          }
+        );
       }
     );
   };
@@ -118,7 +122,11 @@ export const AdministrativePage = () => {
     addWriteLevel(displayedUser.resultAddress, usersContract, userAddress).then(
       (result) => {
         if (result) setLoadingUsers(false);
-        setUserIndex(userIndex);
+        getRoleForCurrent(usersContract, displayedUser.resultAddress).then(
+          (result) => {
+            setRoleForUser(result);
+          }
+        );
       }
     );
   };
@@ -128,7 +136,11 @@ export const AdministrativePage = () => {
     addReadLevel(displayedUser.resultAddress, usersContract, userAddress).then(
       (result) => {
         if (result) setLoadingUsers(false);
-        setUserIndex(userIndex);
+        getRoleForCurrent(usersContract, displayedUser.resultAddress).then(
+          (result) => {
+            setRoleForUser(result);
+          }
+        );
       }
     );
   };
@@ -141,7 +153,11 @@ export const AdministrativePage = () => {
       userAddress
     ).then((result) => {
       if (result) setLoadingUsers(false);
-      setUserIndex(userIndex);
+      getRoleForCurrent(usersContract, displayedUser.resultAddress).then(
+        (result) => {
+          setRoleForUser(result);
+        }
+      );
     });
   };
   const handleCancelWrite = () => {
@@ -152,7 +168,11 @@ export const AdministrativePage = () => {
       userAddress
     ).then((result) => {
       if (result) setLoadingUsers(false);
-      setUserIndex(userIndex);
+      getRoleForCurrent(usersContract, displayedUser.resultAddress).then(
+        (result) => {
+          setRoleForUser(result);
+        }
+      );
     });
   };
   const handleReadWrite = () => {
@@ -163,7 +183,11 @@ export const AdministrativePage = () => {
       userAddress
     ).then((result) => {
       if (result) setLoadingUsers(false);
-      setUserIndex(userIndex);
+      getRoleForCurrent(usersContract, displayedUser.resultAddress).then(
+        (result) => {
+          setRoleForUser(result);
+        }
+      );
     });
   };
 
@@ -172,22 +196,20 @@ export const AdministrativePage = () => {
       <h2>Information about accounts and possible changes</h2>
       <div className="pagination-users">
         <div>
-          {userIndex > 0 && (
-            <CustomButton
-              onClick={() => setUserIndex(userIndex - 1)}
-              title={"Previous account"}
-            />
-          )}
+          <CustomButton
+            onClick={() => setUserIndex(userIndex - 1)}
+            title={"Previous account"}
+            disabled={userIndex <= 0}
+          />
         </div>
 
         {loadingUsers && <CustomLoader size="50px" />}
         <div>
-          {getUpperLimit() && (
-            <CustomButton
-              onClick={() => setUserIndex(userIndex + 1)}
-              title={"Next account"}
-            />
-          )}
+          <CustomButton
+            onClick={() => setUserIndex(userIndex + 1)}
+            title={"Next account"}
+            disabled={!getUpperLimit()}
+          />
         </div>
       </div>
       <div className="user-details-wrapper">

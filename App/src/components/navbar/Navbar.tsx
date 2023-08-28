@@ -20,11 +20,11 @@ const Navbar = () => {
         <NavLink className="navlink" to="/">
           FileVault
         </NavLink>
-        <NavLink className="navlink" to="/explore">
-          Explore
-        </NavLink>
         {loggedStatus && (
           <>
+            <NavLink className="navlink" to="/explore">
+              Explore
+            </NavLink>
             <NavLink className="navlink" to="/profile">
               Profile
             </NavLink>

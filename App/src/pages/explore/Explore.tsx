@@ -87,6 +87,7 @@ export const ExplorePage = () => {
                   ownershipRights={pf.ownershipRights}
                   uploadDate={pf.uploadDate}
                   pastOwners={pf.pastOwners}
+                  ownerEmail={pf.ownerEmail}
                   priceForTransfer={pf.priceForTransfer}
                 />
               ))

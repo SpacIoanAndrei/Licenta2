@@ -40877,12 +40877,12 @@
         }
       },
       "links": {},
-      "address": "0x45Ee67EFA553985AB183f641f6D3d62E64e926C0",
-      "transactionHash": "0x1f7e4542c59fd433744529d4020752722a7abcef9a09862a21e214d7b7a35413"
+      "address": "0x762358AF8Ef71cF0cf0216cd77f62D1D9d07DdC3",
+      "transactionHash": "0x5f97c8659bb9ebb8d457ea81a42b8a2c42e816dd5759c8f70cec6c1450bfc534"
     }
   },
   "schemaVersion": "3.4.13",
-  "updatedAt": "2023-08-21T07:26:43.887Z",
+  "updatedAt": "2023-08-28T17:53:01.143Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginContext } from "../../providers/login/login.provider";
 import lightBulb from "../../helpers/images/ideaBulb.png";
+import ethImg from "../../helpers/images/eth.png";
 import CustomButton from "../../components/button/CustomButton";
 import "./Home.css";
 
@@ -17,8 +18,8 @@ export const HomePage = () => {
       <div className="bulb-container">
         <img
           className="image-div"
-          src={lightBulb}
-          alt="light bulb idea"
+          src={ethImg}
+          alt="Ethereum symbol"
           width={350}
           height={350}
         />
@@ -37,11 +38,20 @@ export const HomePage = () => {
           </h3>
         </div>
       </div>
-      <h2 className="parag-text">
-        Collaborate, connect, and create with a community of like-minded
-        individuals who share your passion for pushing the boundaries of
-        creativity and knowledge.
-      </h2>
+      <div className="second-container-home">
+        <img
+          className="image-div"
+          src={lightBulb}
+          alt="light bulb idea"
+          width={350}
+          height={350}
+        />
+        <h2 className="parag-text-2">
+          Collaborate, connect, and create with a community of like-minded
+          individuals who share your passion for pushing the boundaries of
+          creativity and knowledge.
+        </h2>
+      </div>
       {!loggedStatus && (
         <div className="metamask-footer">
           <h1 className="parag-text">Log in to have access to all features!</h1>

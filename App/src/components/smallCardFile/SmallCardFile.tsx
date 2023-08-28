@@ -29,6 +29,7 @@ interface SmallCardFileProp {
   uploadDate: number;
   likes: number;
   pastOwners: [];
+  ownerEmail?: "";
   priceForTransfer: [0];
 }
 
@@ -45,6 +46,7 @@ export const SmallCardFile = ({
   uploadDate,
   likes,
   pastOwners,
+  ownerEmail,
   priceForTransfer,
 }: SmallCardFileProp) => {
   const navigate = useNavigate();
@@ -120,14 +122,19 @@ export const SmallCardFile = ({
           className="image-container"
           src={getImage(fileType)}
           alt="presentation for tag"
-          onClick={() => window.open("https://ipfs.io/ipfs/" + fileReference)}
+          onClick={() => {
+            if (ownershipRights != 0 && ownershipRights != 4)
+              window.open("https://ipfs.io/ipfs/" + fileReference);
+          }}
         ></img>
       </div>
       <div className="info-container">
         <div className="title">{fileTitle}</div>
-        <div className="info-line">
-          <span>Content Identifier: {fileReference}</span>
-        </div>
+        {ownershipRights != 0 && (
+          <div className="info-line">
+            <span>Content Identifier: {fileReference}</span>
+          </div>
+        )}
         <div className="info-line">
           <span>Price: {localPrice} ETH</span>
           <span>Likes: {localLikes}</span>
@@ -141,10 +148,12 @@ export const SmallCardFile = ({
               <span>Country: {country}</span>
               <span>Rights: {getRightsCategoryString(ownershipRights)}</span>
             </div>
-            <div className="info-line">
-              <span>Type:{fileType}</span>
-              <span>{convertSizeToMBGB(fileSize)}</span>
-            </div>
+            {ownerEmail == undefined && (
+              <div className="info-line">
+                <span>Type:{fileType}</span>
+                <span>{convertSizeToMBGB(fileSize)}</span>
+              </div>
+            )}
             <div className="info-line">
               <span>Upload date: {convertTimestampToDate(uploadDate)}</span>
             </div>
@@ -155,6 +164,11 @@ export const SmallCardFile = ({
               <div>Owner address:</div>
             </div>
             {pastOwners[pastOwners.length - 1]}
+            {ownerEmail && (
+              <div className="info-line">
+                <div>Owner email: {ownerEmail}</div>
+              </div>
+            )}
             <div className="info-line">
               <div>Chain: Ethereum</div>
             </div>

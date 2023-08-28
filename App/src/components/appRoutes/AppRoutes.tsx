@@ -23,8 +23,8 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/explore" element={<ExplorePage />} />
         <Route element={<ProtectedRoute />}>
+          <Route path="/explore" element={<ExplorePage />} />
           <Route path="/profile" element={<MyProfilePage />} />
           <Route path="/myFiles" element={<MyFilesPage />} />
           <Route path="/editFile" element={<EditFilePage />} />

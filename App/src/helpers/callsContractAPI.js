@@ -166,7 +166,7 @@ export const getFilesByTag = async (
       .getFilesForTag(window.web3.utils.fromAscii(selectedTag))
       .call();
 
-    const results = await Promise.all(
+    const fileResults = await Promise.all(
       fileIds.map(async (fileId) => {
         const result = await usersContract.methods.getFile(fileId).call();
         const readableCountry = window.web3.utils.hexToUtf8(result.country);
@@ -190,7 +190,26 @@ export const getFilesByTag = async (
         return result;
       })
     );
-    return filesArray;
+    console.log("fileResults", fileResults);
+
+    let completeFilesArray = [];
+    const results = await Promise.all(
+      fileResults.map(async (file) => {
+        const userData = await usersContract.methods
+          .getUser(file.pastOwners[file.pastOwners.length - 1])
+          .call();
+        const readableEmail = window.web3.utils.hexToUtf8(userData.userEmail);
+        completeFilesArray.push({
+          ...file,
+          country: window.web3.utils.hexToUtf8(file.country),
+          ownerEmail: readableEmail,
+        });
+        // return result;
+      })
+    );
+    console.log("completeFilesArray", completeFilesArray);
+
+    return completeFilesArray;
   }
 };
 
